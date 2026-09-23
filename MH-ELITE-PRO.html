@@ -4594,7 +4594,7 @@ window.MH_FOCUS=(function(){
 function setBodyFocus(value){return MH_FOCUS.set(value);}
 /* Programmatic restores (localStorage / persistence replay) dispatch "change": keep chips + map in step with the state cell. */
 document.addEventListener("change",e=>{const t=e.target;if(t&&(t.id==="bodyFocus"||t.id==="gender"))MH_FOCUS.sync();});
-document.addEventListener("DOMContentLoaded",()=>{MH_FOCUS.sync();});
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{MH_FOCUS.sync();});else setTimeout(()=>{try{MH_FOCUS.sync()}catch(e){}},0);
 document.querySelectorAll(".body-focus-option").forEach(btn=>btn.addEventListener("click",()=>{
  const value=MH_FOCUS.set(btn.dataset.bodyFocus);
  const labels={all:"All Body",upper:"Upper Body",lower:"Lower Body",core:"Core",lowerback:"Lower Back"};
@@ -8197,7 +8197,7 @@ function mhWomenAllowed(e,c){if(c.womenSupineDizzy&&e.pos==='supine')return fals
 function mhWomenSafety(e,c){if(e.pos==='supine'&&c.womenSupineDizzy)return'replace';if(e.pos==='supine'&&mhWomenSupineCaution(c))return'caution';if((c.womenDiastasis&&e.muscle==='core')||(c.womenPelvicFloor&&e.muscle==='core'))return'caution';return'safe';}
 function mhWomenDose(c,e){const light=mhWomenLightOnly(c),cardio=e.muscle==='cardio';return{sets:light?1:2,reps:cardio?(light?'5–8 min':'8–15 min'):(light?'5–8':'8–12'),rest:light?75:60,intensity:light?'Very light / symptom-free':(c.womenHealth==='pregnant'?'Moderate / talk-test':'RPE 3–5'),tempo:'Controlled • continuous breathing'};}
 function buildWomenHealthProgram(showAlert){const c=c14();if(!mhWomenMode(c))return build14(showAlert);S._buildNonce=(Number(S._buildNonce)||0)+1;S.locked=false;S.program=[];CUSTOM.warnings=[];const out=document.getElementById('output');if(mhWomenBlocked(c)){if(out)out.innerHTML='<div class="notice" style="border-color:#ff8e9e66;color:#ffd7dd"><b>PROGRAM BLOCKED — WOMEN’S HEALTH SAFETY</b><br>Contraindication / complication status is selected. No training program is generated. Clinical clearance is required before exercise programming.</div>';save14(false);return[];}let rows=MH_WOMEN_HEALTH_EXERCISES.filter(e=>equipmentOK(e,c)&&risk(e,c.limitations)!=='replace'&&mhWomenAllowed(e,c));const score=e=>{let n=0;if(e.tags?.includes('gentle'))n+=mhWomenLightOnly(c)?8:2;if(c.womenDiastasis&&e.tags?.includes('diastasis'))n+=5;if(c.womenPelvicFloor&&e.tags?.includes('pelvic'))n+=5;if(mhWomenSupineCaution(c)&&e.pos==='supine')n-=5;if(e.pos==='upright')n+=2;return n};rows=rows.slice().sort((a,b)=>score(b)-score(a));const dayCount=Math.max(1,Math.min(mhWomenLightOnly(c)?3:5,Number(c.days)||3));for(let di=0;di<dayCount;di++){const rotate=(a,n)=>a.slice(n).concat(a.slice(0,n)),selected=rotate(rows,di%Math.max(1,rows.length));const breathing=selected.filter(e=>['mwh360','mwhpfc','mwhcc'].includes(e.id)).slice(0,mhWomenLightOnly(c)?3:2);const strength=selected.filter(e=>!['mwh360','mwhpfc','mwhcc'].includes(e.id)&&e.muscle!=='cardio').slice(0,mhWomenLightOnly(c)?3:6);const cardio=selected.filter(e=>e.muscle==='cardio').slice(0,1);const wrap=e=>({...e,settings:mhWomenDose(c,e),safety:mhWomenSafety(e,c),secondaryMuscles:[],_type:'main',_womenHealth:true});const stage=c.womenHealth==='pregnant'?c.womenStage:c.postpartumStage;S.program.push({day:di+1,name:(c.womenHealth==='pregnant'?'PREGNANCY':'POSTPARTUM')+' • '+String(stage).toUpperCase()+' • DAY '+(di+1),groups:[{muscle:'breathing',title:'BREATHING • PRESSURE MANAGEMENT',exercises:breathing.map(wrap)},{muscle:'women-health',title:mhWomenLightOnly(c)?'GENTLE RECOVERY • CONNECTION':'SUPPORTED STRENGTH • FUNCTION',exercises:strength.map(wrap)}],cardioWarmup:[],mobility:[],activation:[],cardio:cardio.map(wrap),stretches:[]});}S.previousExerciseIds=S.program.flatMap(d=>[...d.groups.flatMap(g=>g.exercises),...(d.cardio||[])].map(e=>e.id));S.programProgress={key:['women-health',c.womenHealth,c.womenStage,c.postpartumStage,c.womenMedicalStatus,c.womenDiastasis,c.womenPelvicFloor,c.womenCesarean,c.womenSupineDizzy,c.days].join('|'),completedDays:[],unlocked:false};renderProgram(c);renderNutrition(c);updateDashboard();save14(false);if(out)out.insertAdjacentHTML('afterbegin','<div class="notice" style="margin-bottom:12px"><b>04C WOMEN’S HEALTH ACTIVE:</b> Stage and symptom flags are controlling exercise selection. '+(mhWomenLightOnly(c)?'Light-activity mode is active.':'Progressive supported mode is active.')+'</div>');try{document.dispatchEvent(new CustomEvent('mh-program-built'))}catch(e){}return S.program;}
-function syncWomenHealthMode(){const gender=String(document.getElementById('gender')?.value||'').toLowerCase(),female=gender==='female',mode=document.getElementById('womenHealth')?.value||'none',active=female&&mode!=='none',card=document.getElementById('womenHealth04C'),badge=document.getElementById('womenHealthStateBadge'),note=document.getElementById('womenHealthVisibilityNote'),wh=document.getElementById('womenHealth');if(card)card.classList.toggle('mh-active',active);if(wh){wh.disabled=!female;if(!female&&wh.value!=='none')wh.value='none';}if(badge){badge.textContent=!female?'SELECT FEMALE PROFILE':(active?(mode==='pregnant'?'PREGNANCY ACTIVE':'POSTPARTUM ACTIVE'):'READY');badge.className='tag '+(active?'green':'gold');}if(note)note.style.display=female?'none':'';const sf=document.getElementById('womenStageField'),pf=document.getElementById('postpartumStageField'),mf=document.getElementById('womenMedicalField'),flags=document.getElementById('womenFlags');if(sf)sf.style.display=active&&mode==='pregnant'?'':'none';if(pf)pf.style.display=active&&mode==='postpartum'?'':'none';if(mf)mf.style.display=active?'':'none';if(flags)flags.style.display=active?'grid':'none';['bodyFocus','trainingSplit','absFrequency','program','focus'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.disabled=active;const field=el.closest('.field');if(field){field.style.display=active?'none':'';field.setAttribute('aria-hidden',active?'true':'false')}});const cb=document.getElementById('customExerciseBuilder');if(cb){const field=cb.closest('.field');if(field){field.style.display=active?'none':'';field.setAttribute('aria-hidden',active?'true':'false')}}document.body.classList.toggle('mh-women-health-mode',active);try{if(window.MH_WH49)MH_WH49.sync()}catch(_){}}
+function syncWomenHealthMode(){const gender=String(document.getElementById('gender')?.value||'').toLowerCase(),female=gender==='female',mode=document.getElementById('womenHealth')?.value||'none',active=female&&mode!=='none',card=document.getElementById('womenHealth04C'),badge=document.getElementById('womenHealthStateBadge'),note=document.getElementById('womenHealthVisibilityNote'),wh=document.getElementById('womenHealth');if(card)card.classList.toggle('mh-active',active);if(wh){wh.disabled=!female;if(!female&&wh.value!=='none')wh.value='none';}if(badge){badge.textContent=!female?'SELECT FEMALE PROFILE':(active?(mode==='pregnant'?'PREGNANCY ACTIVE':'POSTPARTUM ACTIVE'):'READY');badge.className='tag '+(active?'green':'gold');}if(note)note.style.display=female?'none':'';const sf=document.getElementById('womenStageField'),pf=document.getElementById('postpartumStageField'),mf=document.getElementById('womenMedicalField'),flags=document.getElementById('womenFlags');if(sf)sf.style.display=active&&mode==='pregnant'?'':'none';if(pf)pf.style.display=active&&mode==='postpartum'?'':'none';if(mf)mf.style.display=active?'':'none';if(flags)flags.style.display=active?'grid':'none';['bodyFocus','trainingSplit','absFrequency','program','focus'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.disabled=active;const field=el.closest('.field');if(field){let hide=active;if(!hide&&id==='bodyFocus'){try{hide=!!(window.MH_FOCUS&&typeof MH_FOCUS.isFemale==='function'&&!MH_FOCUS.isFemale())}catch(_){}}field.style.display=hide?'none':'';field.setAttribute('aria-hidden',hide?'true':'false')}});const cb=document.getElementById('customExerciseBuilder');if(cb){const field=cb.closest('.field');if(field){field.style.display=active?'none':'';field.setAttribute('aria-hidden',active?'true':'false')}}document.body.classList.toggle('mh-women-health-mode',active);try{if(window.MH_WH49)MH_WH49.sync()}catch(_){}}
 window.MH_SYNC_WOMEN_HEALTH_MODE=syncWomenHealthMode;
 (function(){function boot(){['gender','womenHealth','womenStage','postpartumStage','womenMedicalStatus','womenDiastasis','womenPelvicFloor','womenCesarean','womenSupineDizzy'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.dataset.whBound){e.dataset.whBound='1';e.addEventListener('change',()=>{syncWomenHealthMode();try{saveState()}catch(_){}})}});syncWomenHealthMode()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();})();
 
@@ -20964,6 +20964,31 @@ window.MH_PRINT_DEFER=function(fn){
  return run;
 };
 var active=null;
+/* Some fields show their value through custom buttons/maps and keep the real <select> hidden.
+   Buttons are hidden in print, so write the chosen value as plain text for the PDF only. */
+function rendered(el){var cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity)<0.05)return false;var r=el.getBoundingClientRect();return r.width>2&&r.height>2}
+function addPrintValues(t){
+ document.querySelectorAll('.mh-pv').forEach(function(x){x.remove()});
+ t.querySelectorAll('.field').forEach(function(f){
+  if(f.getBoundingClientRect().height<2||getComputedStyle(f).display==='none')return;
+  var lab=f.querySelector(':scope > label');if(!lab||!(lab.textContent||'').trim())return;
+  var ctrls=[].slice.call(f.querySelectorAll('input,select,textarea'));
+  var shown=ctrls.filter(function(c){return c.type!=='hidden'&&rendered(c)});
+  if(shown.length)return;
+  var val='';
+  var sel=ctrls.filter(function(c){return c.tagName==='SELECT'})[0];
+  if(sel&&sel.selectedIndex>=0&&sel.options[sel.selectedIndex])val=sel.options[sel.selectedIndex].text;
+  else{var inp=ctrls.filter(function(c){return c.tagName!=='SELECT'&&c.type!=='hidden'&&c.type!=='checkbox'&&c.type!=='radio'})[0];if(inp&&inp.value)val=inp.value}
+  if(!val){
+   var btns=[].slice.call(f.querySelectorAll('button')).filter(rendered);
+   var on=btns.filter(function(x){return x.getAttribute('aria-pressed')==='true'||x.getAttribute('aria-checked')==='true'||/(^|\s)(active|selected|on|is-active|checked)(\s|$)/.test(x.className)});
+   var pick=on.length?on:(btns.length===1?btns:[]);
+   val=pick.map(function(x){return (x.innerText||x.textContent||'').replace(/\s+/g,' ').trim()}).filter(Boolean).join(' · ');
+  }
+  if(!val)return;
+  var sp=document.createElement('div');sp.className='mh-pv';sp.textContent=val;f.appendChild(sp);
+ });
+}
 function enterPrintMode(t){
  exitPrintMode();
  document.querySelectorAll('.mh-print-target').forEach(function(x){x.classList.remove('mh-print-target')});
@@ -20971,10 +20996,12 @@ function enterPrintMode(t){
  var st={t:t,title:document.title};
  try{var h=t.querySelector('h1,h2,h3');document.title='MH ELITE PRO - '+(h?h.textContent.trim():'Page')}catch(e){}
  active=st;
+ try{addPrintValues(t)}catch(e){}
  window.MH_PRINT_DEFER(function(){if(active===st)exitPrintMode()});
 }
 function exitPrintMode(){
  if(!active)return;var st=active;active=null;
+ document.querySelectorAll('.mh-pv').forEach(function(x){x.remove()});
  document.body.classList.remove('mh-print-page');st.t.classList.remove('mh-print-target');document.title=st.title;
 }
 function visiblePanel(){
@@ -21055,9 +21082,12 @@ window.MH_SAFE_PAGE_PDF={install:install,sync:sync};
  html body.mh-print-page .mh-print-target :is(th,thead td):not(#mhpz1):not(#mhpz2):not(#mhpz3){background:#f2f4f7!important}
  html body.mh-print-page .mh-print-target canvas:not(#mhpz1):not(#mhpz2):not(#mhpz3){filter:invert(1) hue-rotate(180deg)!important}
  html body.mh-print-page .mh-print-target :is(.card,.panel,.section,.box,.stat,.mhp-stat,.day,table,th,td):not(#mhpz1):not(#mhpz2):not(#mhpz3){border:1px solid #d0d7e2!important;break-inside:auto}
- html body.mh-print-page .mh-print-target #level:not(#mhpz1):not(#mhpz2):not(#mhpz3){position:static!important;opacity:1!important;width:100%!important;height:auto!important;min-height:40px!important;overflow:visible!important;display:block!important;pointer-events:none!important;padding:9px 12px!important;border:1px solid #d0d7e2!important;border-radius:12px!important;background:#fff!important;color:#111827!important;-webkit-text-fill-color:#111827!important;font-size:15px!important}
  html body.mh-print-page .mh-print-target .mh-level-lux:not(#mhpz1):not(#mhpz2):not(#mhpz3){display:none!important}
 }</style>
+<style id="mh-print-values">
+.mh-pv{display:none}
+@media print{html body.mh-print-page .mh-print-target .mh-pv:not(#mhpz1):not(#mhpz2):not(#mhpz3){display:block!important;margin-top:6px!important;padding:9px 12px!important;border:1px solid #d0d7e2!important;border-radius:12px!important;background:#fff!important;color:#111827!important;-webkit-text-fill-color:#111827!important;font-size:15px!important;font-weight:600!important;line-height:1.35!important}}
+</style>
 <script id="mh-pwa-runtime">
 (function(){'use strict';
 /* 1) Service worker (offline + updates) */
