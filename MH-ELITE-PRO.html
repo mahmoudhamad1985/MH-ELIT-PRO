@@ -21665,6 +21665,7 @@ window.MH_RENEW_REMINDER={refresh:refresh,info:info};
 const UA=navigator.userAgent||'';
 const IS_WEBVIEW=/; wv\)/.test(UA)||(/Android/.test(UA)&&/Version\/[\d.]+/.test(UA)&&/Chrome\/[\d.]+/.test(UA));
 const IS_IOS=/iP(hone|ad|od)/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const IS_PHONE=IS_WEBVIEW||IS_IOS||/Android|Mobile/i.test(UA); /* same PDF experience on every phone */
 const nativePrint=window.print?window.print.bind(window):function(){};
 let capable=null; /* can this browser turn a page into an image? (checked once) */
 const MM=96/25.4, PAGE_W=Math.round(210*MM), PAGE_H=Math.round(297*MM), MARGIN=Math.round(10*MM);
@@ -21857,10 +21858,10 @@ function probe(){
   }catch(e){res(false)}
  });
 }
-window.MH_INAPP_PDF={make:()=>make(currentTarget()),isWebView:IS_WEBVIEW,isIOS:IS_IOS,capable:()=>capable};
+window.MH_INAPP_PDF={make:()=>make(currentTarget()),isWebView:IS_WEBVIEW,isIOS:IS_IOS,isPhone:IS_PHONE,capable:()=>capable};
 /* APK wrappers: print is a no-op, so every PDF button (page, health sheet, reports) is routed here.
-   iPhone: same in-app PDF when Safari allows it; otherwise the normal iOS print sheet is used. */
-if(IS_WEBVIEW||IS_IOS||window.MH_FORCE_INAPP_PDF){
+   Other phones (Android browsers, iPhone): same in-app PDF when the browser allows it; otherwise the normal print sheet. */
+if(IS_PHONE||window.MH_FORCE_INAPP_PDF){
  probe().then(v=>{capable=v});
  window.print=function(){
   if(IS_WEBVIEW||window.MH_FORCE_INAPP_PDF||capable===true){try{make(currentTarget())}catch(e){nativePrint()}}
