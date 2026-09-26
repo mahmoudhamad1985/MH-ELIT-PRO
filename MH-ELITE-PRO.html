@@ -626,6 +626,57 @@ html[dir="rtl"] #mhSubscriptionModal .mh-sub-plan:after{content:'✓ وصول ك
 #mhSubscriptionModal .mh-sub-plan.popular .mh-sub-select{background:linear-gradient(135deg,#35e79e,#0eaa6d)!important;color:#04130c!important;box-shadow:0 13px 32px rgba(42,224,147,.32),0 0 20px rgba(42,224,147,.10),inset 0 1px 0 rgba(255,255,255,.32)!important}
 #mhSubscriptionModal .mh-sub-plan.best .mh-sub-select{background:linear-gradient(135deg,#ffd95d,#c69213)!important;color:#181003!important;box-shadow:0 13px 32px rgba(245,200,66,.27),0 0 20px rgba(245,200,66,.09),inset 0 1px 0 rgba(255,255,255,.36)!important}
 @media(max-width:520px){#mhSubscriptionModal .mh-sub-shell{max-height:97vh}#mhSubscriptionModal .mh-sub-top{position:relative}#mhSubscriptionModal .mh-sub-body{padding-top:12px}#mhSubscriptionModal .mh-sub-stat{min-height:60px}#mhSubscriptionModal .mh-sub-plan:after{line-height:1.45;min-height:30px}#mhSubscriptionModal .mh-sub-select{min-height:46px;font-size:10px}}
+/* ===== 30-DAY CHALLENGE CARD ===== */
+.mh30-card{position:relative;margin:0 0 18px;padding:20px;border-radius:22px;overflow:hidden;
+  background:linear-gradient(155deg,#1a1206,#0c0904 60%,#070604);
+  border:1px solid #f5c84255;box-shadow:0 16px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05)}
+.mh30-card:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(ellipse 80% 60% at 15% -10%,rgba(245,200,66,.22),transparent 60%)}
+.mh30-head{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1;margin-bottom:4px}
+.mh30-title{font-weight:900;font-size:16px;color:#f5c842;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+.mh30-streak{display:flex;align-items:center;gap:5px;font-weight:900;font-size:13px;color:#ffb347;
+  background:#ff8a0022;border:1px solid #ff8a0044;border-radius:999px;padding:5px 12px}
+.mh30-sub{color:var(--muted);font-size:12.5px;margin:6px 0 16px;position:relative;z-index:1;line-height:1.6}
+.mh30-start-btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font-weight:900;font-size:15px;cursor:pointer;
+  background:linear-gradient(135deg,#f5c842,#c9962f);color:#1a1300;box-shadow:0 10px 26px rgba(245,200,66,.3);position:relative;z-index:1}
+.mh30-start-btn:active{transform:scale(.98)}
+.mh30-progress-row{display:flex;align-items:center;gap:16px;position:relative;z-index:1;margin-bottom:14px}
+.mh30-ring{--p:0;width:74px;height:74px;flex:0 0 auto;border-radius:50%;position:relative;
+  background:conic-gradient(#f5c842 calc(var(--p)*3.6deg),#ffffff14 0deg)}
+.mh30-ring:before{content:"";position:absolute;inset:6px;border-radius:50%;background:#0c0904}
+.mh30-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;z-index:1}
+.mh30-meta{flex:1}
+.mh30-meta .day{font-weight:900;font-size:15px;color:#fff}
+.mh30-meta .desc{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.6}
+.mh30-dots{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;position:relative;z-index:1;margin-bottom:16px}
+.mh30-dot{aspect-ratio:1;border-radius:6px;background:#ffffff10;border:1px solid #ffffff14;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#8fa5bc}
+.mh30-dot.done{background:linear-gradient(135deg,#f5c842,#c9962f);color:#1a1300;border-color:#f5c842}
+.mh30-dot.today{border-color:#f5c842;box-shadow:0 0 0 2px #f5c84255}
+.mh30-dot.miss{background:#ff556922;border-color:#ff556944;color:#ff90a0}
+.mh30-badges{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:14px}
+.mh30-badge{font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:999px;background:#ffffff08;border:1px solid #ffffff14;color:var(--muted)}
+.mh30-badge.unlocked{background:linear-gradient(135deg,#f5c84225,#f5c84208);border-color:#f5c84266;color:#f5c842}
+.mh30-actions{display:flex;gap:10px;position:relative;z-index:1}
+.mh30-reset{background:none;border:1px solid #ffffff1c;color:var(--muted);font-size:11px;font-weight:800;padding:9px 14px;border-radius:12px;cursor:pointer}
+.mh30-done-banner{position:relative;z-index:1;text-align:center;padding:14px;border-radius:16px;background:linear-gradient(135deg,#48e59a1c,#48e59a08);border:1px solid #48e59a44;color:#7ee2aa;font-weight:800;font-size:13px}
+.mh30-head-left{display:flex;align-items:center;gap:8px}
+.mh30-info-btn{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1px solid #f5c84255;background:#f5c84214;color:#f5c842;font-weight:900;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.mh30-info-btn:active{transform:scale(.92)}
+.mh30-info-list{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.mh30-info-item{display:flex;gap:12px;align-items:flex-start}
+.mh30-info-ico{flex:0 0 34px;width:34px;height:34px;border-radius:11px;background:#f5c84218;border:1px solid #f5c84240;display:flex;align-items:center;justify-content:center;font-size:16px}
+.mh30-info-item b{display:block;font-size:13px;color:#fff;margin-bottom:3px}
+.mh30-info-item span{font-size:12px;color:var(--muted);line-height:1.7}
+/* ===== Per-tab short intro captions ===== */
+.mh-tab-caption{display:flex;align-items:center;gap:10px;margin:-6px 0 20px;padding:12px 16px;border-radius:14px;
+  background:linear-gradient(135deg,#f5c8421c,#f5c84208);border:1px solid #f5c84255;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.mh-tab-caption:before{content:"💡";flex:0 0 auto;font-size:15px;line-height:1}
+.mh-tab-caption .cap-text{font-size:13px;font-weight:800;color:#f5d98a;line-height:1.6}
+.mh-tab-caption .cap-en{display:block}
+.mh-tab-caption .cap-ar{display:none}
+html[lang="ar"] .mh-tab-caption .cap-en{display:none}
+html[lang="ar"] .mh-tab-caption .cap-ar{display:block}
 </style>
 <style id="mh-v151-fresh-license-input-css">
 #mhLicCodeMount{min-height:58px;width:100%}
@@ -1788,6 +1839,11 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <h1><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block">🔥</span> ELITE Ultimate V15</h1>
 <p>Adaptive session generation with a dedicated CARDIO WARM-UP → DYNAMIC MOBILITY → ACTIVATION → MAIN WORKOUT → CARDIO FINISHER → STATIC COOL-DOWN architecture. Every phase adapts to Level + Goal + Training Type + Home/Gym and opens in the Smart Timer with work, transition/rest, rounds and voice coaching.</p>
 </section>
+<div class="mh30-card" id="mh30Card"></div>
+<div class="modal" id="mh30InfoModal"><div class="modal-card">
+<div class="modal-top"><b style="color:var(--gold)">🏆 30-DAY CHALLENGE</b><button class="close" onclick="closeModal('mh30InfoModal')">×</button></div>
+<div id="mh30InfoBody"></div>
+</div></div>
 <nav class="elite-tabs" id="eliteTabs" role="tablist">
 <button class="elite-tab-btn active" data-tab="1" onclick="eliteGoTab(1)"><span class="etn">1</span><span class="etlabel">Training Profile &amp; Goal</span></button>
 <button class="elite-tab-btn" data-tab="2" onclick="eliteGoTab(2)"><span class="etn">2</span><span class="etlabel">Session &amp; Safety</span></button>
@@ -1910,6 +1966,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <div class="grid elite-tab-panel active" data-panel="1">
 <section class="card">
 <h2><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block">👤</span> 01 — Training Client Profile</h2>
+<div class="mh-tab-caption"><div class="cap-text"><span class="cap-en">Your profile and goal — the foundation of your program.</span><span class="cap-ar">بياناتك وهدفك — الأساس الذي يُبنى عليه برنامجك.</span></div></div>
 <div class="fields">
 <div class="field"><label>Name</label><input autocomplete="off" id="name" placeholder="Enter client name" value=""/></div>
 <div class="field"><label>Gender</label><select id="gender"><option disabled="" selected="" value="">Select gender</option><option value="female">Female</option><option value="male">Male</option></select></div>
@@ -2036,6 +2093,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <section class="card full" id="mhHealthSafety" aria-label="Health and Training Safety"></section>
 <section class="card full">
 <h2><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block;color:var(--gold)">⚡</span> 03 — Session Architecture</h2>
+<div class="mh-tab-caption"><div class="cap-text"><span class="cap-en">Training setup and safety considerations before you start.</span><span class="cap-ar">إعدادات التدريب واعتبارات الأمان قبل البدء.</span></div></div>
 <div class="fields">
 <div class="field"><label>Warm-Up Protocol</label><select id="warmup"><option value="5">5 min — Essential</option><option selected="" value="8">8 min — Performance</option><option value="10">10 min — Full Preparation</option></select></div>
 <div class="field"><label>Cardio / Conditioning</label><select id="cardioMode"><option value="none">None</option><option selected="" value="short">6–8 min — Finisher</option><option value="conditioning">10–15 min — Conditioning</option><option value="fatburn">12–20 min — Fat Burn</option></select></div>
@@ -2133,6 +2191,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <div class="grid elite-tab-panel" data-panel="3">
 <section class="card full">
 <h2><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block">🏋️</span> 05 — Program Output</h2>
+<div class="mh-tab-caption"><div class="cap-text"><span class="cap-en">Adaptive training built around your goal and level.</span><span class="cap-ar">برنامج تدريبي متكيّف مع هدفك ومستواك.</span></div></div>
 <div class="empty" id="output">Complete the profile and press <b>BUILD SMART PROGRAM</b>.</div>
 </section>
 <div class="elite-tab-nextrow"><button class="btn secondary" onclick="eliteGoTab(4)" type="button">Nutrition <span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block">→</span></button></div>
@@ -2140,6 +2199,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <div class="grid elite-tab-panel" data-panel="4">
 <section class="card full">
 <h2><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block;color:var(--gold)">🍽️</span> 06 — Personalized Nutrition &amp; Hydration</h2>
+<div class="mh-tab-caption"><div class="cap-text"><span class="cap-en">Calories, macros and meals personalized to your goal.</span><span class="cap-ar">سعرات، ماكروز ووجبات مخصصة لهدفك.</span></div></div>
 <div class="mh-v104-nutrition-root" id="nutrition">
 <section class="mhn3-section" id="mh-v104-static-profile" style="padding:16px;border:1px solid #26364d;border-radius:18px;background:#080f19">
 <div style="margin-bottom:14px"><strong style="font-size:16px">🍽️ NUTRITION CLIENT PROFILE</strong><div style="color:#91a0b5;font-size:10px;margin-top:4px">Independent nutrition profile — enter the client's data before building the nutrition plan.</div></div>
@@ -2165,6 +2225,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <div class="grid elite-tab-panel" data-panel="5">
 <section class="card full">
 <h2><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block;color:var(--gold)">📈</span> 07 — Real Progress Dashboard</h2>
+<div class="mh-tab-caption"><div class="cap-text"><span class="cap-en">Track your body, performance and consistency.</span><span class="cap-ar">تابع تطور جسمك، أدائك والتزامك.</span></div></div>
 <div class="stats">
 <div class="stat"><small>WORKOUTS</small><b id="sWorkouts">0</b></div>
 <div class="stat"><small>COMPLIANCE</small><b id="sCompliance">0%</b></div>
@@ -2512,6 +2573,7 @@ window.MH_PHOTOS={reload,count:()=>items.length};
 <div class="grid elite-tab-panel" data-panel="6">
 <section class="card full">
 <h2><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block;color:var(--danger)">🩹</span> 08 — <span id="physioTitle">Physio Therapy — Pain Relief</span></h2>
+<div class="mh-tab-caption"><div class="cap-text"><span class="cap-en">Pain and movement assessment with safer return-to-training guidance.</span><span class="cap-ar">تقييم الألم والحركة ودعم العودة الآمنة للتدريب.</span></div></div>
 <div class="notice"><span aria-hidden="true" class="elite-icon" style="font-style:normal;display:inline-block;color:var(--warn)">⚠️</span> <span id="physioDisclaimer">These are general mobility/relief movements, not a medical treatment. Stop immediately if you feel sharp or worsening pain, and see a doctor or licensed physiotherapist for any diagnosed injury or severe/persistent pain.</span></div>
 <div id="physioContainer"></div>
 </section>
@@ -6475,6 +6537,7 @@ function recordDay(day,checked){
  return;
  }
  P.mark(day);
+ try{window.MH_CHALLENGE?.markToday('training')}catch(e){}
  }else P.unmark(day);
  saveState(false);
  updateDashboard();
@@ -11379,7 +11442,14 @@ function eliteGoTab(n){
  const nav=document.getElementById('eliteTabs');
  const activeBtn=nav?.querySelector('.elite-tab-btn.active');
  activeBtn?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+ // Jump straight to this tab's content (just under the tab bar) instead of the very top of the
+ // page — the hero/challenge card above the tabs would otherwise force a second manual scroll every time.
+ if(nav){
+ const y=nav.getBoundingClientRect().top+window.scrollY-8;
+ window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+ }else{
  window.scrollTo({top:0,behavior:'smooth'});
+ }
  // Progress tab (5) hosts the chart canvas; it can't draw correctly while hidden,
  // so redraw once it becomes visible.
  if(String(n)==='4'){
@@ -14977,7 +15047,7 @@ window.mhNxCommitFood=mhNxCommitFood;
 window.mhNxReplace=function(i,fi,newId){return mhNxCommitFood(i,'replace',newId,fi,100);};
 window.mhNxAddFood=function(i,foodId,grams){return mhNxCommitFood(i,'add',foodId,0,grams);};
 window.mhNxRemoveExtra=function(i,idx){if(N3.extraFoods[i])N3.extraFoods[i].splice(idx,1);render();};
-window.mhNxToggleDone=function(i){N3.completed[i]=!N3.completed[i];render();};
+window.mhNxToggleDone=function(i){N3.completed[i]=!N3.completed[i];if(N3.completed[i]){try{window.MH_CHALLENGE?.markToday('nutrition')}catch(e){}}render();};
 window.renderNutrition=render;
 /* V94 SINGLE STATE CONTROLLER
  Persisted state is loaded ONCE. From then on the visible Nutrition form owns the prescription. */
@@ -22127,6 +22197,132 @@ function tryShare(a){
 var oClick=HTMLAnchorElement.prototype.click;
 HTMLAnchorElement.prototype.click=function(){if(this.hasAttribute('download')&&tryShare(this))return;return oClick.apply(this,arguments)};
 document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[download]');if(a&&tryShare(a)){e.preventDefault();e.stopPropagation()}},true);
+})();
+</script>
+<script id="mh30-challenge-engine">
+/* ===== MH ELITE 30-DAY CHALLENGE ENGINE =====
+   A real calendar-day challenge, not a free click-counter:
+   - "Training" credit for a day is only granted from recordDay() when a Smart-Timer-finished
+     workout is actually marked complete (see the hook added inside recordDay()).
+   - "Nutrition" credit for a day is granted when at least one meal is marked done that day.
+   - Streak = consecutive calendar days (ending today or yesterday) with a training credit.
+   - Persisted independently of the weekly training split, so it survives program rebuilds. */
+(function(){
+'use strict';
+const KEY='mh_elite_challenge_v1';
+const isAr=()=>document.documentElement.dir==='rtl'||document.documentElement.lang==='ar'||(typeof S!=='undefined'&&S&&S.language==='ar');
+const T=(en,ar)=>isAr()?ar:en;
+const MS_DAY=86400000;
+function todayStr(){const d=new Date();d.setHours(0,0,0,0);return d.toISOString().slice(0,10)}
+function load(){
+ try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(s&&typeof s==='object')return Object.assign({active:false,startDate:null,days:{},bestStreak:0},s)}}catch(e){}
+ return {active:false,startDate:null,days:{},bestStreak:0};
+}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function dayIndex(s){
+ if(!s.startDate)return -1;
+ const start=new Date(s.startDate+'T00:00:00');const now=new Date();now.setHours(0,0,0,0);
+ return Math.floor((now-start)/MS_DAY);
+}
+function computeStreak(s,uptoIdx){
+ let streak=0;
+ for(let i=uptoIdx;i>=0;i--){const d=s.days[String(i)];if(d&&d.training)streak++;else break;}
+ return streak;
+}
+function start(){
+ const s={active:true,startDate:todayStr(),days:{},bestStreak:0};
+ save(s);render();
+ try{showEliteToast?.(T('🏆 30-Day Challenge started — let\'s go!','🏆 بدأ تحدي الـ30 يوم — يلا نطق!'))}catch(e){}
+}
+function reset(){
+ if(!confirm(T('Reset the 30-Day Challenge? Your current progress will be lost.','إعادة ضبط تحدي الـ30 يوم؟ رح تفقد تقدّمك الحالي.')))return;
+ save({active:false,startDate:null,days:{},bestStreak:0});
+ render();
+}
+function markToday(kind){
+ const s=load();if(!s.active)return;
+ const idx=dayIndex(s);if(idx<0||idx>29)return;
+ const key=String(idx);
+ s.days[key]=s.days[key]||{};
+ if(kind==='training')s.days[key].training=true;
+ if(kind==='nutrition')s.days[key].nutrition=true;
+ s.bestStreak=Math.max(s.bestStreak||0,computeStreak(s,idx));
+ save(s);
+ render();
+}
+function showInfo(){
+ const body=document.getElementById('mh30InfoBody');if(!body)return;
+ const items=[
+  ['🗓️',T('30 real calendar days','30 يوم تقويمي حقيقي'),T('The challenge follows actual dates, not just clicks — Day 1 to Day 30, one real day at a time.','التحدي بيتبع تواريخ حقيقية مش مجرد ضغطات — يوم 1 لغاية يوم 30، يوم حقيقي ورا التاني.')],
+  ['✅',T('A day only counts when it\'s actually finished','اليوم بينحسب بس إذا انتهى فعلياً'),T('A training day is credited only after you finish that day\'s workout in the Smart Timer and press COMPLETE DAY — opening the app or the program alone does not count.','يوم التمرين بينحسب بس بعد ما تخلّص تمرين هداك اليوم بالمؤقت الذكي وتضغط COMPLETE DAY — مجرد فتح التطبيق أو البرنامج ما بيحسب.')],
+  ['🍽️',T('Nutrition counts too','التغذية كمان بتحسب'),T('Marking a meal as Completed in the Nutrition tab also logs that day as a nutrition day.','لما تعلّم وجبة "مكتملة" بتبويب النيوتريشن، هالتسجيل بيحسب هداك اليوم كيوم تغذية.')],
+  ['🔥',T('Streak = consecutive days','الستريك = أيام متتالية'),T('Your streak counts backward from today. Miss one full day with no finished workout and the streak resets to zero — the calendar below still shows every day you trained.','الستريك بينعدّ رجوع من اليوم. إذا فوّت يوم كامل بدون ما تخلّص تمرين، الستريك بيرجع صفر — بس التقويم تحت بيضل يعرضلك كل يوم تمرّنت فيه.')],
+  ['🏅',T('Milestone badges','شارات الإنجاز'),T('Badges unlock at 7, 15, 21 and 30 total training days completed inside the challenge — they don\'t require a perfect streak, just total days trained.','الشارات بتنفتح عند 7 و15 و21 و30 يوم تمرين إجمالي جوا التحدي — ما بتحتاج ستريك مثالي، بس مجموع أيام التمرين.')],
+  ['↺',T('Reset anytime','إعادة الضبط بأي وقت'),T('You can reset and start a fresh 30-day challenge whenever you want from the Reset button — your previous progress is cleared.','فيك تعمل إعادة ضبط وتبلش تحدي جديد بأي وقت من زر إعادة الضبط — تقدّمك السابق بينمسح.')]
+ ];
+ body.innerHTML='<div class="mh30-info-list">'+items.map(([ico,title,desc])=>
+  `<div class="mh30-info-item"><div class="mh30-info-ico">${ico}</div><div><b>${title}</b><span>${desc}</span></div></div>`
+ ).join('')+'</div>';
+ document.getElementById('mh30InfoModal')?.classList.add('show');
+}
+window.MH_CHALLENGE={start,reset,markToday,load,showInfo};
+
+function render(){
+ const box=document.getElementById('mh30Card');if(!box)return;
+ const s=load();
+ const idx=dayIndex(s);
+ const finished=s.active&&idx>29;
+ if(!s.active){
+  box.innerHTML=`
+   <div class="mh30-head"><div class="mh30-head-left"><div class="mh30-title">🏆 ${T('30-DAY CHALLENGE','تحدي الـ30 يوم')}</div><button class="mh30-info-btn" onclick="MH_CHALLENGE.showInfo()" type="button" aria-label="${T('How it works','طريقة العمل')}">؟</button></div></div>
+   <div class="mh30-sub">${T('30 straight days of real, finished workouts. Every completed day counts — miss a day and the streak resets. Are you in?','30 يوم متواصل من تمارين حقيقية ومنتهية فعلياً بالمؤقت الذكي. كل يوم منجز بيحسب — وإذا فوّت يوم، الستريك بيصفّر. جاهز؟')}</div>
+   <button class="mh30-start-btn" onclick="MH_CHALLENGE.start()">🔥 ${T('START THE 30-DAY CHALLENGE','ابدأ تحدي الـ30 يوم')}</button>`;
+  return;
+ }
+ if(finished){
+  const doneCount=Object.values(s.days).filter(d=>d&&d.training).length;
+  box.innerHTML=`
+   <div class="mh30-head"><div class="mh30-head-left"><div class="mh30-title">🏆 ${T('30-DAY CHALLENGE','تحدي الـ30 يوم')}</div><button class="mh30-info-btn" onclick="MH_CHALLENGE.showInfo()" type="button" aria-label="${T('How it works','طريقة العمل')}">؟</button></div><div class="mh30-streak">🔥 ${T('Best','أفضل')} ${s.bestStreak}</div></div>
+   <div class="mh30-done-banner">🎉 ${T(`Challenge complete! ${doneCount}/30 days trained.`,`خلصت التحدي! ${doneCount}/30 يوم تمرين.`)}</div>
+   <div class="mh30-actions" style="margin-top:12px"><button class="mh30-reset" onclick="MH_CHALLENGE.reset()">↺ ${T('Start a new challenge','ابدأ تحدي جديد')}</button></div>`;
+  return;
+ }
+ const dayNum=idx+1;
+ const streak=computeStreak(s,idx);
+ const doneCount=Object.values(s.days).filter(d=>d&&d.training).length;
+ const pct=Math.round((idx+1)/30*100);
+ const milestones=[7,15,21,30];
+ const dots=Array.from({length:30},(_,i)=>{
+  const d=s.days[String(i)];
+  let cls='mh30-dot';
+  if(d&&d.training)cls+=' done';
+  else if(i<idx)cls+=' miss';
+  else if(i===idx)cls+=' today';
+  return `<div class="${cls}">${i+1}</div>`;
+ }).join('');
+ const badges=milestones.map(m=>{
+  const unlocked=doneCount>=m;
+  return `<div class="mh30-badge${unlocked?' unlocked':''}">${unlocked?'✓':'🔒'} ${T('Day','يوم')} ${m}</div>`;
+ }).join('');
+ box.innerHTML=`
+  <div class="mh30-head"><div class="mh30-head-left"><div class="mh30-title">🏆 ${T('30-DAY CHALLENGE','تحدي الـ30 يوم')}</div><button class="mh30-info-btn" onclick="MH_CHALLENGE.showInfo()" type="button" aria-label="${T('How it works','طريقة العمل')}">؟</button></div><div class="mh30-streak">🔥 ${streak} ${T('day streak','يوم متتالي')}</div></div>
+  <div class="mh30-progress-row">
+   <div class="mh30-ring" style="--p:${pct}"><b>${dayNum}/30</b></div>
+   <div class="mh30-meta">
+    <div class="day">${T('Day','اليوم')} ${dayNum} ${T('of 30','من 30')}</div>
+    <div class="desc">${T(`${doneCount} workouts finished so far. Complete today's Smart Timer session to keep the streak alive.`,`${doneCount} تمرين منجز لهلق. أنهِ تمرين اليوم بالمؤقت الذكي حتى تحافظ على الستريك.`)}</div>
+   </div>
+  </div>
+  <div class="mh30-dots">${dots}</div>
+  <div class="mh30-badges">${badges}</div>
+  <div class="mh30-actions"><button class="mh30-reset" onclick="MH_CHALLENGE.reset()">↺ ${T('Reset','إعادة ضبط')}</button></div>`;
+}
+window.MH_CHALLENGE_RENDER=render;
+document.addEventListener('DOMContentLoaded',render);
+if(document.readyState==='complete'||document.readyState==='interactive')setTimeout(render,0);
+// Re-render in the new language whenever the page's lang/dir flips (Arabic/English toggle),
+// without touching child content — so it can't trigger a mutation loop.
+try{new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang','dir']});}catch(e){}
 })();
 </script>
 </body>
