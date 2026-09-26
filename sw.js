@@ -23,6 +23,11 @@ self.addEventListener('activate', event => {
   );
 });
 
+// Lets the page force this new version to take over immediately when the person taps "Update now".
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 function withTimeout(promise, ms) {
   return new Promise((resolve, reject) => {
     const t = setTimeout(() => reject(new Error('timeout')), ms);

@@ -21890,7 +21890,42 @@ if(IS_PHONE||window.MH_FORCE_INAPP_PDF){
 <script id="mh-pwa-runtime">
 (function(){'use strict';
 /* 1) Service worker (offline + updates) */
-try{if('serviceWorker' in navigator&&window.isSecureContext){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{scope:'./'}).then(function(r){try{r.update()}catch(e){}}).catch(function(){})});}}catch(e){}
+try{if('serviceWorker' in navigator&&window.isSecureContext){window.addEventListener('load',function(){
+  navigator.serviceWorker.register('sw.js',{scope:'./'}).then(function(reg){
+    try{reg.update()}catch(e){}
+    if(reg.waiting&&navigator.serviceWorker.controller)mhShowUpdateBanner(reg);
+    reg.addEventListener('updatefound',function(){
+      var nw=reg.installing;
+      if(!nw)return;
+      nw.addEventListener('statechange',function(){
+        if(nw.state==='installed'&&navigator.serviceWorker.controller)mhShowUpdateBanner(reg);
+      });
+    });
+  }).catch(function(){});
+  var mhSwRefreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(mhSwRefreshing)return;
+    mhSwRefreshing=true;
+    location.reload();
+  });
+});}}catch(e){}
+function mhShowUpdateBanner(reg){
+  try{
+    if(document.getElementById('mhUpdateBanner'))return;
+    var ar=(document.documentElement.lang==='ar')||(document.documentElement.dir==='rtl');
+    var b=document.createElement('div');
+    b.id='mhUpdateBanner';
+    b.setAttribute('style','position:fixed;top:0;left:0;right:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top));background:linear-gradient(90deg,#f3cf6c,#c9962f);color:#1c1405;font-weight:900;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.35);font-family:Tajawal,Cairo,"Segoe UI",sans-serif;text-align:center');
+    b.innerHTML='<span>'+(ar?'📦 في تحديث جديد للتطبيق':'📦 A new update is available')+'</span><button type="button" id="mhUpdateBtn" style="border:0;border-radius:10px;padding:7px 16px;font-weight:900;background:#1c1405;color:#f3cf6c;cursor:pointer;font-size:12.5px">'+(ar?'تحديث الآن':'Update now')+'</button>';
+    document.body.appendChild(b);
+    document.getElementById('mhUpdateBtn').addEventListener('click',function(){
+      try{
+        if(reg.waiting){reg.waiting.postMessage({type:'SKIP_WAITING'})}
+        else{location.reload()}
+      }catch(e){location.reload()}
+    });
+  }catch(e){}
+}
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){})}catch(e){}
 /* 2) iPhone/iPad: file downloads (backups, JSON exports) go through the iOS share sheet -> "Save to Files" */
 var ua=navigator.userAgent||'',iOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
