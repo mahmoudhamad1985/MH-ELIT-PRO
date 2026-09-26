@@ -94,7 +94,7 @@ window.mhSetRoot=function(k,v){var d=document.documentElement;if(d[k]!==v)d[k]=v
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:rgba(16,24,38,.94);border:1px solid var(--line);border-radius:20px;padding:20px}.full{grid-column:1/-1}.card h2{font-size:16px;margin:0 0 15px;display:flex;align-items:center;gap:9px}.card h2 i{color:var(--accent)}
 .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:5px}.field input,.field select{width:100%;background:#0a111c;color:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 12px}.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px #4fc3f71a}
 .limit-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.limit{background:#0b1320;border:1px solid var(--line);border-radius:12px;padding:9px}.limit label{font-size:10px;color:var(--muted);font-weight:800;display:block;margin-bottom:5px}.limit select{width:100%;background:#101826;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px}
-.actions{display:flex;gap:9px;flex-wrap:wrap}.status{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}.tag{padding:6px 11px;border-radius:999px;background:#1a2637;color:#d8e2ef;font-size:11px;font-weight:800}.tag.blue{color:var(--accent);border:1px solid #4fc3f744}.tag.green{color:var(--ok);border:1px solid #7ee2aa55}.tag.red{color:var(--danger);border:1px solid #ff8e9e55}.tag.gold{color:var(--gold);border:1px solid #f5c84255}
+.actions{display:flex;gap:9px;flex-wrap:wrap}.status{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}.tag{padding:6px 11px;border-radius:999px;background:#1a2637;color:#d8e2ef;font-size:11px;font-weight:800}.tag.blue{color:var(--accent);border:1px solid #4fc3f744}.tag.green{color:var(--ok);border:1px solid #7ee2aa55}.tag.red{color:var(--danger);border:1px solid #ff8e9e55}.tag.gold{color:var(--gold);border:1px solid #f5c84255}.tag.tag-focus{flex-basis:100%;text-align:center;font-size:14px;padding:12px 16px;letter-spacing:.2px;background:linear-gradient(135deg,#48e59a22,#48e59a0c);border:1px solid #48e59a77;box-shadow:0 0 0 1px #48e59a22 inset}
 
 .body-focus-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:7px}
 .body-focus-option{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:78px;padding:10px 7px;border:1px solid var(--line);border-radius:13px;background:#0b1320;color:#dce4ee;cursor:pointer;text-align:center;transition:.18s ease;touch-action:manipulation}
@@ -1674,12 +1674,20 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
  if(/\b(david|mark|james|daniel|alex|fred|george|guy|ryan|paul|tom|matthew|brian|eric|oliver|william|majed|khalid|fahd|tariq|hamed|yousef|omar|naayf|nabil|salim|rashid|hamza|yusuf)\b/.test(n))return 4;
  if(/\b(zira|samantha|susan|karen|victoria|amy|emma|joanna|salli|kendra|moira|tessa|hoda|salma|zariyah|amira|fatima|layla|noura|maryam|reem|laila)\b/.test(n))return -4;
  return 0;}
+ /* Quality score: prefers modern "natural/neural/enhanced/premium" engine voices (Google, Microsoft
+ Online/Natural, Apple "Enhanced"/"Premium") over old flat robotic ones, on top of the male preference. */
+ function qualityScore(v){const n=((v.name||'')+' '+(v.voiceURI||'')).toLowerCase();
+ if(/\bgoogle\b/.test(n))return 6;
+ if(/natural|neural|enhanced|premium|siri/.test(n))return 5;
+ if(/online|wavenet/.test(n))return 4;
+ if(v.localService===false)return 2;
+ return 0;}
  function chooseVoice(lang){const l=lang.toLowerCase(),b=l.split('-')[0],vs=voices();
  let cand=vs.filter(v=>(v.lang||'').toLowerCase()===l);
  if(!cand.length)cand=vs.filter(v=>(v.lang||'').toLowerCase().startsWith(b));
  if(!cand.length)return null;
- return cand.slice().sort((x,y)=>maleScore(y)-maleScore(x))[0];}
- function webSpeak(text,lang,onend){try{if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return false;const u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=.85;u.pitch=.82;u.volume=1;const v=chooseVoice(lang);if(v)u.voice=v;u.onend=()=>onend&&onend();u.onerror=()=>onend&&onend();speechSynthesis.speak(u);return true}catch(e){return false}}
+ return cand.slice().sort((x,y)=>(qualityScore(y)+maleScore(y))-(qualityScore(x)+maleScore(x)))[0];}
+ function webSpeak(text,lang,onend){try{if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return false;const u=new SpeechSynthesisUtterance(text);u.lang=lang;const ar=lang.toLowerCase().startsWith('ar');u.rate=ar?0.97:1;u.pitch=ar?1.02:1;u.volume=1;const v=chooseVoice(lang);if(v)u.voice=v;u.onend=()=>onend&&onend();u.onerror=()=>onend&&onend();speechSynthesis.speak(u);return true}catch(e){return false}}
  function nativeSpeak(text,lang){try{return !!(window.MHAPKVoice&&typeof window.MHAPKVoice.nativeSpeak==='function'&&window.MHAPKVoice.nativeSpeak(text,lang))}catch(e){return false}}
  const AR_TXT='مرحباً بكم في إم إتش إيليت برو',EN_TXT='Welcome to M H Elite Pro';
  function greet(){
@@ -1923,6 +1931,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <div class="field"><label>Primary Goal</label><select id="goal"><option selected="" value="hypertrophy">Muscle Building</option><option value="fatloss">Fat Loss</option><option value="strength">Strength</option><option value="glute">Glute Focus</option><option value="recomp">Body Recomposition</option></select></div>
 <div class="field"><label>Training Location</label><select id="location"><option selected="" value="gym">GYM — Full Equipment</option><option value="home">HOME — Home Exercises</option></select></div>
 <div class="field"><label>Equipment</label><select id="equipment"><option selected="" value="full">Full Gym</option><option value="dumbbell">Dumbbells + Bodyweight</option><option value="bodyweight">Bodyweight</option></select></div>
+<div class="field" id="equipBandCard" style="margin-top:4px;padding:14px 16px;border-radius:16px;border:2px solid #f5c84255;background:linear-gradient(135deg,#f5c84214,#f5c84206);transition:border-color .15s,background .15s"><label style="margin:0;display:flex;align-items:center;gap:14px;cursor:pointer"><input id="equipBand" type="checkbox" style="width:30px;height:30px;min-width:30px;accent-color:#f5c842;cursor:pointer" onchange="document.getElementById('equipBandCard').style.borderColor=this.checked?'#f5c842':'#f5c84255';document.getElementById('equipBandCard').style.background=this.checked?'linear-gradient(135deg,#f5c84230,#f5c84210)':'linear-gradient(135deg,#f5c84214,#f5c84206)';document.getElementById('equipBandDumbbellRow').style.display=this.checked?'flex':'none';if(!this.checked)document.getElementById('equipBandDumbbell').checked=false;"> <span style="font-size:15px;font-weight:800;color:#f5c842;line-height:1.4">🎗️ RESISTANCE BAND<br><span style="font-size:11px;font-weight:600;color:var(--muted)">Band-only exercises — works at home or in the gym</span></span></label><div id="equipBandDumbbellRow" style="display:none;align-items:center;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid #f5c84233"><label style="margin:0;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%"><input id="equipBandDumbbell" type="checkbox" style="width:24px;height:24px;min-width:24px;accent-color:#f5c842;cursor:pointer"> <span style="font-size:13px;font-weight:700;color:#f5c842">+ DUMBBELLS <span style="font-size:11px;font-weight:600;color:var(--muted)">(mix Band + Dumbbell exercises together)</span></span></label></div></div>
 <div class="field"><label>Training Style</label><select id="focus"><option selected="" value="hypertrophy">Hypertrophy</option><option value="strength">Strength</option><option value="endurance">Endurance</option><option value="technique">Technique / Control</option></select></div>
 <div class="field full" id="mhPlanSetup"></div>
 <div class="field full"><label>Body Area Focus</label><select class="body-focus-native" id="bodyFocus"><option selected="" value="all">All Body</option><option value="upper">Upper Body</option><option value="lower">Lower Body</option><option value="core">Core</option><option value="lowerback">Lower Back</option></select><div aria-label="Body Area Focus" class="body-focus-grid" role="radiogroup">
@@ -4281,6 +4290,113 @@ const EXTRA_MOVEMENTS_1000 = [
  {id:'ex1000_39_09',name:'Bear Crawl — Isometric Hold',ar:'Bear Crawl — Isometric Hold',muscle:'cardio',equipment:['home', 'bodyweight', 'full'],difficulty:4,joints:['shoulder', 'wrist', 'lowback'],cues:['Control the movement', 'Maintain a comfortable range', 'Breathe steadily']},
 ];
 EXTRA_MOVEMENTS_1000.forEach(x=>DB.push([x.id,x.name,x.muscle,x.equipment,x.difficulty,x.joints,x.cues,x.ar,true]));
+const BAND_MOVEMENTS = [
+ {id:'bandbandedsquat',name:"Banded Squat",ar:"سكوات بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedsumosquat',name:"Banded Sumo Squat",ar:"سكوات سومو بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedfrontsquat',name:"Banded Front Squat",ar:"سكوات أمامي بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedromaniandeadlift',name:"Banded Romanian Deadlift",ar:"رومانيان ديدليفت بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["lowback", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedgoodmorning',name:"Banded Good Morning",ar:"غود مورنينغ بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["lowback", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedreverselunge',name:"Banded Reverse Lunge",ar:"لنج خلفي بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedforwardlunge',name:"Banded Forward Lunge",ar:"لنج أمامي بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedlaterallunge',name:"Banded Lateral Lunge",ar:"لنج جانبي بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedsplitsquat',name:"Banded Split Squat",ar:"سبليت سكوات بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedbulgariansplitsquat',name:"Banded Bulgarian Split Squat",ar:"بلغاري سبليت سكوات بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:3,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedstepup',name:"Banded Step-Up",ar:"ستيب أب بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:2,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedlegextension',name:"Banded Leg Extension",ar:"مد الركبة بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:1,joints:["knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedlegcurl',name:"Banded Leg Curl",ar:"ثني الركبة بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:1,joints:["knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedstandinghamstringcurl',name:"Banded Standing Hamstring Curl",ar:"ثني الركبة واقفًا بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:1,joints:["knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedcalfraise',name:"Banded Calf Raise",ar:"رفع الكعبين بالمقاومة المطاطية",muscle:'calves',equipment:['band'],difficulty:1,joints:["ankle"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedglutebridge',name:"Banded Glute Bridge",ar:"جسر الألوية بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedhipthrust',name:"Banded Hip Thrust",ar:"هيب ثرست بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:2,joints:["hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedfrogpump',name:"Banded Frog Pump",ar:"فروغ بامب بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandeddonkeykick',name:"Banded Donkey Kick",ar:"دونكي كيك بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedglutekickback',name:"Banded Glute Kickback",ar:"كيك باك للألوية بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedstandinghipextension',name:"Banded Standing Hip Extension",ar:"مد الورك واقفًا بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedfirehydrant',name:"Banded Fire Hydrant",ar:"فاير هايدرانت بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedhipabduction',name:"Banded Hip Abduction",ar:"إبعاد الورك بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedstandinghipabduction',name:"Banded Standing Hip Abduction",ar:"إبعاد الورك واقفًا بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedlateralwalk',name:"Banded Lateral Walk",ar:"مشي جانبي بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip", "knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedmonsterwalk',name:"Banded Monster Walk",ar:"مونستر ووك بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:2,joints:["hip", "knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandeddiagonalwalk',name:"Banded Diagonal Walk",ar:"مشي قطري بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:2,joints:["hip", "knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedclamshell',name:"Banded Clamshell",ar:"كلامشيل بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedsidelyinglegraise',name:"Banded Side-Lying Leg Raise",ar:"رفع الرجل من الاستلقاء الجانبي بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:1,joints:["hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedkickbackwithabduction',name:"Banded Kickback with Abduction",ar:"كيك باك مع إبعاد بالمقاومة المطاطية",muscle:'glutes',equipment:['band'],difficulty:2,joints:["hip", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandresistancebandrow',name:"Resistance Band Row",ar:"تجديف بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandseatedbandrow',name:"Seated Band Row",ar:"تجديف جالسًا بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandstandingbandrow',name:"Standing Band Row",ar:"تجديف واقفًا بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmbandrow',name:"Single-Arm Band Row",ar:"تجديف بذراع واحدة بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:2,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbentoverbandrow',name:"Bent-Over Band Row",ar:"تجديف بانحناء بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:2,joints:["shoulder", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandlatpulldown',name:"Band Lat Pulldown",ar:"سحب علوي بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmbandlatpulldown',name:"Single-Arm Band Lat Pulldown",ar:"سحب علوي بذراع واحدة بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:2,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandstraightarmpulldown',name:"Band Straight-Arm Pulldown",ar:"سحب بذراع مستقيمة بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandhighrow',name:"Band High Row",ar:"تجديف عالٍ بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandlowrow',name:"Band Low Row",ar:"تجديف منخفض بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandpullapart',name:"Band Pull-Apart",ar:"فتح الذراعين بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandreversefly',name:"Band Reverse Fly",ar:"رفرفة عكسية بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandchestpress',name:"Band Chest Press",ar:"ضغط صدر بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder", "elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmbandchestpress',name:"Single-Arm Band Chest Press",ar:"ضغط صدر بذراع واحدة بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:2,joints:["shoulder", "elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandinclinechestpress',name:"Band Incline Chest Press",ar:"ضغط صدر مائل بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder", "elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbanddeclinechestpress',name:"Band Decline Chest Press",ar:"ضغط صدر مائل هابط بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder", "elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandchestfly',name:"Band Chest Fly",ar:"فتح صدر بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandinclinefly',name:"Band Incline Fly",ar:"فتح صدر مائل بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandlowtohighfly',name:"Band Low-to-High Fly",ar:"فتح صدر من الأسفل للأعلى بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandhightolowfly',name:"Band High-to-Low Fly",ar:"فتح صدر من الأعلى للأسفل بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedpushup',name:"Banded Push-Up",ar:"ضغط بالمقاومة المطاطية",muscle:'chest',equipment:['band'],difficulty:2,joints:["shoulder", "wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandshoulderpress',name:"Band Shoulder Press",ar:"ضغط كتف بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder", "elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmbandshoulderpress',name:"Single-Arm Band Shoulder Press",ar:"ضغط كتف بذراع واحدة بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:2,joints:["shoulder", "elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandfrontraise',name:"Band Front Raise",ar:"رفرفة أمامية بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandlateralraise',name:"Band Lateral Raise",ar:"رفرفة جانبية بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandreardeltfly',name:"Band Rear Delt Fly",ar:"رفرفة الكتف الخلفي بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbanduprightrow',name:"Band Upright Row",ar:"تجديف عمودي بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:2,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandfacepull',name:"Band Face Pull",ar:"فيس بُل بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandexternalrotation',name:"Band External Rotation",ar:"دوران خارجي للكتف بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandinternalrotation',name:"Band Internal Rotation",ar:"دوران داخلي للكتف بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandyraise',name:"Band Y-Raise",ar:"رفرفة Y بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:1,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandbicepscurl',name:"Band Biceps Curl",ar:"بايسبس كيرل بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandalternatingbandcurl',name:"Alternating Band Curl",ar:"بايسبس كيرل بالتبادل بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmbandcurl',name:"Single-Arm Band Curl",ar:"بايسبس كيرل بذراع واحدة بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandhammercurl',name:"Band Hammer Curl",ar:"هامر كيرل بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandreversecurl',name:"Band Reverse Curl",ar:"كيرل عكسي بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:1,joints:["elbow", "wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandconcentrationcurl',name:"Band Concentration Curl",ar:"كيرل تركيز بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandhighcurl',name:"Band High Curl",ar:"كيرل عالٍ بالمقاومة المطاطية",muscle:'biceps',equipment:['band'],difficulty:2,joints:["elbow", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandtricepspushdown',name:"Band Triceps Pushdown",ar:"تراي بوش داون بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandoverheadtricepsextension',name:"Band Overhead Triceps Extension",ar:"مد ترايسبس فوق الرأس بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:1,joints:["elbow", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmbandpushdown',name:"Single-Arm Band Pushdown",ar:"بوش داون بذراع واحدة بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandsinglearmoverheadextension',name:"Single-Arm Overhead Extension",ar:"مد فوق الرأس بذراع واحدة بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:1,joints:["elbow", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandtricepskickback',name:"Band Triceps Kickback",ar:"كيك باك ترايسبس بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:1,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandskullcrusher',name:"Band Skull Crusher",ar:"سكل كراشر بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:2,joints:["elbow"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandclosegrippress',name:"Band Close-Grip Press",ar:"ضغط بقبضة ضيقة بالمقاومة المطاطية",muscle:'triceps',equipment:['band'],difficulty:2,joints:["elbow", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandwristcurl',name:"Band Wrist Curl",ar:"كيرل معصم بالمقاومة المطاطية",muscle:'forearms',equipment:['band'],difficulty:1,joints:["wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandreversewristcurl',name:"Band Reverse Wrist Curl",ar:"كيرل معصم عكسي بالمقاومة المطاطية",muscle:'forearms',equipment:['band'],difficulty:1,joints:["wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandwristextension',name:"Band Wrist Extension",ar:"مد المعصم بالمقاومة المطاطية",muscle:'forearms',equipment:['band'],difficulty:1,joints:["wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandpronation',name:"Band Pronation",ar:"كب الساعد بالمقاومة المطاطية",muscle:'forearms',equipment:['band'],difficulty:1,joints:["wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandsupination',name:"Band Supination",ar:"بسط الساعد بالمقاومة المطاطية",muscle:'forearms',equipment:['band'],difficulty:1,joints:["wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandpallofpress',name:"Band Pallof Press",ar:"بالوف بريس بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:2,joints:["lowback", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandpallofhold',name:"Band Pallof Hold",ar:"ثبات بالوف بريس بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:2,joints:["lowback", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandwoodchop',name:"Band Wood Chop",ar:"وود تشوب بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:2,joints:["lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandreversewoodchop',name:"Band Reverse Wood Chop",ar:"وود تشوب عكسي بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:2,joints:["lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandstandingrotation',name:"Band Standing Rotation",ar:"دوران الجذع واقفًا بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:1,joints:["lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandkneelingcrunch',name:"Band Kneeling Crunch",ar:"كرنش من الركوع بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:1,joints:["lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandstandingcrunch',name:"Band Standing Crunch",ar:"كرنش واقفًا بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:1,joints:["lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandsidebend',name:"Band Side Bend",ar:"انحناء جانبي بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:1,joints:["lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedmountainclimber',name:"Banded Mountain Climber",ar:"ماونتن كلايمر بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:2,joints:["lowback", "shoulder", "wrist"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedplank',name:"Banded Plank",ar:"بلانك بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:2,joints:["lowback", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedbirddog',name:"Banded Bird Dog",ar:"بيرد دوغ بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:1,joints:["lowback", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandsquattopress',name:"Band Squat to Press",ar:"سكوات إلى ضغط بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:3,joints:["knee", "hip", "shoulder", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandthruster',name:"Band Thruster",ar:"ثراستر بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:3,joints:["knee", "hip", "shoulder", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbanddeadlifttorow',name:"Band Deadlift to Row",ar:"ديدليفت إلى تجديف بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:3,joints:["lowback", "hip", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandsquattorow',name:"Band Squat to Row",ar:"سكوات إلى تجديف بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:3,joints:["knee", "hip", "shoulder", "lowback"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandreverselungetorow',name:"Band Reverse Lunge to Row",ar:"لنج خلفي إلى تجديف بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:3,joints:["knee", "hip", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandlungetopress',name:"Band Lunge to Press",ar:"لنج إلى ضغط بالمقاومة المطاطية",muscle:'legs',equipment:['band'],difficulty:3,joints:["knee", "hip", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandgoodmorningtorow',name:"Band Good Morning to Row",ar:"غود مورنينغ إلى تجديف بالمقاومة المطاطية",muscle:'back',equipment:['band'],difficulty:3,joints:["lowback", "hip", "shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandhighpull',name:"Band High Pull",ar:"هاي بُل بالمقاومة المطاطية",muscle:'shoulders',equipment:['band'],difficulty:2,joints:["shoulder"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandwoodchoptosquat',name:"Band Wood Chop to Squat",ar:"وود تشوب إلى سكوات بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:3,joints:["lowback", "knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedbearcrawl',name:"Banded Bear Crawl",ar:"بير كرول بالمقاومة المطاطية",muscle:'core',equipment:['band'],difficulty:3,joints:["lowback", "shoulder", "wrist", "knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedlateralshuffle',name:"Banded Lateral Shuffle",ar:"شفل جانبي بالمقاومة المطاطية",muscle:'cardio',equipment:['band'],difficulty:2,joints:["knee", "hip"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedmarch',name:"Banded March",ar:"مارش بالمقاومة المطاطية",muscle:'cardio',equipment:['band'],difficulty:1,joints:["hip", "knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]},
+ {id:'bandbandedhighknees',name:"Banded High Knees",ar:"هاي نيز بالمقاومة المطاطية",muscle:'cardio',equipment:['band'],difficulty:2,joints:["hip", "knee"],cues:["Keep constant tension on the band", "Move with control through a full comfortable range", "Breathe steadily and avoid jerky movement"]}
+];
+BAND_MOVEMENTS.forEach(x=>DB.push([x.id,x.name,x.muscle,x.equipment,x.difficulty,x.joints,x.cues,x.ar]));
 /* Forearm movements (the library had no forearm category). Same row format as DB: [id,name,muscle,equipment,difficulty,joints,cues] */
 [
  ['mhfa01','Barbell Wrist Curl','forearms',['full'],1,['wrist','elbow'],['Forearms resting on a bench','Let the bar roll to your fingertips','Curl with the wrists only']],
@@ -4688,7 +4804,7 @@ window.MH_BODYTEST=(function(){
 
 function getClient(){
  let lim={};document.querySelectorAll(".lim").forEach(x=>lim[x.dataset.joint]=x.value);
- const c={name:val("name"),location:val("location"),gender:val("gender"),age:+val("age"),weight:+val("weight"),height:+val("height"),level:val("level"),days:+val("days"),duration:+val("duration"),goal:val("goal"),equipment:val("equipment"),focus:val("focus"),bodyFocus:val("bodyFocus"),program:val("program"),trainingSplit:val("trainingSplit")||"none",absFrequency:val("absFrequency")||"1",activity:val("activity"),progression:val("progression"),warmup:+val("warmup"),warmupStyle:val("warmupStyle"),cardioMode:val("cardioMode"),cardioStyle:val("cardioStyle"),womenHealth:document.getElementById("womenHealth")?.value||"none",womenStage:document.getElementById("womenStage")?.value||"trimester1",postpartumStage:document.getElementById("postpartumStage")?.value||"return",womenMedicalStatus:document.getElementById("womenMedicalStatus")?.value||"cleared",womenDiastasis:!!document.getElementById("womenDiastasis")?.checked,womenPelvicFloor:!!document.getElementById("womenPelvicFloor")?.checked,womenCesarean:!!document.getElementById("womenCesarean")?.checked,womenSupineDizzy:!!document.getElementById("womenSupineDizzy")?.checked,showGeneratedVariants:!!document.getElementById("showGeneratedVariants")?.checked,manualLimitations:lim,limitations:(window.MH_HEALTH?MH_HEALTH.mergeLimitations(lim):lim),health:(window.MH_HEALTH?MH_HEALTH.snapshot():null)};
+ const c={name:val("name"),location:val("location"),gender:val("gender"),age:+val("age"),weight:+val("weight"),height:+val("height"),level:val("level"),days:+val("days"),duration:+val("duration"),goal:val("goal"),equipment:val("equipment"),band:!!document.getElementById("equipBand")?.checked,bandDumbbell:!!document.getElementById("equipBandDumbbell")?.checked,focus:val("focus"),bodyFocus:val("bodyFocus"),program:val("program"),trainingSplit:val("trainingSplit")||"none",absFrequency:val("absFrequency")||"1",activity:val("activity"),progression:val("progression"),warmup:+val("warmup"),warmupStyle:val("warmupStyle"),cardioMode:val("cardioMode"),cardioStyle:val("cardioStyle"),womenHealth:document.getElementById("womenHealth")?.value||"none",womenStage:document.getElementById("womenStage")?.value||"trimester1",postpartumStage:document.getElementById("postpartumStage")?.value||"return",womenMedicalStatus:document.getElementById("womenMedicalStatus")?.value||"cleared",womenDiastasis:!!document.getElementById("womenDiastasis")?.checked,womenPelvicFloor:!!document.getElementById("womenPelvicFloor")?.checked,womenCesarean:!!document.getElementById("womenCesarean")?.checked,womenSupineDizzy:!!document.getElementById("womenSupineDizzy")?.checked,showGeneratedVariants:!!document.getElementById("showGeneratedVariants")?.checked,manualLimitations:lim,limitations:(window.MH_HEALTH?MH_HEALTH.mergeLimitations(lim):lim),health:(window.MH_HEALTH?MH_HEALTH.snapshot():null)};
  /* HEALTH & TRAINING SAFETY: the Health Safety State adjusts conditioning / warm-up defaults before any builder reads the client */
  if(window.MH_HEALTH){try{const ho=MH_HEALTH.clientOverrides(c);if(ho)Object.assign(c,ho)}catch(_){}}
  // FIX: the visible "Program Style" <select> only lists a handful of base
@@ -4829,6 +4945,9 @@ function risk(e,lim){
  return worst;
 }
 function equipmentOK(e,c){
+ // Resistance Band toggle: when enabled, the program is BAND ONLY — exclusive of dumbbell/gym/machine work, not additive.
+ // The "+ Dumbbells" sub-toggle widens that to Band + Dumbbell/Bodyweight together, still excluding full-gym/machine work.
+ if(c.band)return e.equipment.includes("band")||(c.bandDumbbell&&(e.equipment.includes("dumbbell")||e.equipment.includes("bodyweight")));
  if(c.location==="home") return e.equipment.includes("home") && (c.equipment!=="bodyweight" ? true : e.equipment.includes("bodyweight"));
  if(c.equipment==="full")return e.equipment.includes("full");
  if(c.equipment==="dumbbell")return e.equipment.includes("dumbbell")||e.equipment.includes("bodyweight");
@@ -4846,10 +4965,34 @@ function womenHealthOK(e,c){
 }
 function levelTarget(c){return {beginner:1,intermediate:2,advanced:3,elite:4}[c.level]||1;}
 function levelName(c){return {beginner:"FOUNDATION",intermediate:"DEVELOPMENT",advanced:"ADVANCED",elite:"ELITE"}[c.level]||"FOUNDATION";}
-function choose(muscle,c,used){
+// Groups near-duplicate variants of the same base movement (e.g. "Push-Up — Narrow Grip", "Banded Push-Up",
+// "Resistance Band Push-Up") under one pattern key, so a single day doesn't stack five versions of one move.
+function basePattern(name){
+ let n=String(name||"").toLowerCase();
+ n=n.split(/\s+—\s+/)[0];
+ const stop=new Set(["resistance","band","banded","elastic","resisted","mini","loop","tube","tubing"]);
+ n=n.split(/[\s-]+/).filter(w=>w&&!stop.has(w)).join(" ").trim();
+ return n;
+}
+function choose(muscle,c,used,usedPatterns){
  const target=levelTarget(c),max=levelMax[c.level];
  let base=E.filter(e=>e.muscle===muscle&&equipmentOK(e,c)&&generatedVariantOK(e,c)&&womenHealthOK(e,c)&&e.difficulty<=max&&risk(e,c.limitations)!=="replace"&&!used.has(e.id));
  if(!base.length)return null;
+ if(usedPatterns&&usedPatterns.size){
+ const fresh=base.filter(e=>!usedPatterns.has(basePattern(e.name)));
+ if(fresh.length)base=fresh;
+ }
+ if(c.band && c.bandDumbbell){
+ // Band + Dumbbells mode: alternate between the two pools so both actually show up in the program
+ // instead of raw scoring letting one side (band exercises tend to score easier/lower-difficulty) dominate.
+ const bandPool=base.filter(e=>e.equipment.includes("band"));
+ const otherPool=base.filter(e=>!e.equipment.includes("band"));
+ if(bandPool.length&&otherPool.length){
+ let usedBand=0,usedOther=0;
+ used.forEach(id=>{const ex=E.find(x=>x.id===id);if(ex&&ex.muscle===muscle){if(ex.equipment.includes("band"))usedBand++;else usedOther++;}});
+ base=(usedBand<=usedOther)?bandPool:otherPool;
+ }
+ }
  const n=s=>String(s||"").toLowerCase();
  function goalScore(e){
  const name=n(e.name), eq=(e.equipment||[]).map(n).join(" ");
@@ -4874,6 +5017,10 @@ function choose(muscle,c,used){
  if(/squat|deadlift|row|press|pull-up|pulldown|hip thrust/i.test(name))s+=10;
  if(/cable|machine|curl|extension|raise|fly|kickback/i.test(name))s+=7;
  }
+ // Band-only mode already restricts the whole pool to band exercises via equipmentOK, so no bonus is needed there.
+ // In Band + Dumbbells mode both types are eligible — keep the bonus small so band and dumbbell exercises mix
+ // instead of the bonus letting band dominate every pick.
+ if(c.band && c.bandDumbbell && (e.equipment||[]).includes("band"))s+=4;
  s-=Math.abs(e.difficulty-target)*6;
  return s;
  }
@@ -5194,10 +5341,12 @@ function buildProgram(showAlert=true){
  const focusGroups=focusGroupsForDay(d.groups,di);
  Object.entries(focusGroups).forEach(([m,count])=>{
  let arr=[];
+ const usedPatterns=new Set();
  for(let i=0;i<count;i++){
- let ex=choose(m,c,used);
+ let ex=choose(m,c,used,usedPatterns);
  if(ex){
  used.add(ex.id);
+ usedPatterns.add(basePattern(ex.name));
  const st=settings(c,m);
  // Goal-aware prescription is applied at build time, not only displayed by the UI.
  if(c.goal==="strength"){st.reps="5–8";st.rest=120;}
@@ -5584,7 +5733,8 @@ function mh151OutputBodyDistribution(c){
  </div>`;
 }
 function renderProgram(c,totalSets){ totalSets=totalSets??S.program.reduce((n,d)=>n+d.groups.reduce((x,g)=>x+g.exercises.reduce((z,e)=>z+e.settings.sets,0),0),0);
- let html=`<div class="status"><span class="tag blue">PHASE ${S.phase}</span><span class="tag green">${(MH_FOCUS.isDistributed(c)&&!MH_FOCUS.manualActive()&&!(PROGRAMS[c.program]&&PROGRAMS[c.program].cardioOnly))?MH_FOCUS.tag(c):PROGRAMS[c.program].name}</span><span class="tag">${c.level.toUpperCase()}</span><span class="tag gold">${c.goal.toUpperCase()}</span><span class="tag">${c.days} DAYS</span><span class="tag">${totalSets} ${(S.program[0]&&S.program[0].cardioMain)?"INTERVALS":"SETS"}</span><span class="tag">${c.location==="home"?"HOME PROGRAM":"GYM PROGRAM"}</span><span class="tag blue">WARM-UP ${c.warmup} MIN</span><span class="tag gold">CARDIO ${c.cardioMode.toUpperCase()}</span><span class="tag blue">MOVEMENT TIER: ${levelName(c)}</span></div>`;
+ const __isFocusTag=MH_FOCUS.isDistributed(c)&&!MH_FOCUS.manualActive()&&!(PROGRAMS[c.program]&&PROGRAMS[c.program].cardioOnly);
+ let html=`<div class="status"><span class="tag blue">PHASE ${S.phase}</span><span class="tag green${__isFocusTag?' tag-focus':''}">${__isFocusTag?MH_FOCUS.tag(c):PROGRAMS[c.program].name}</span><span class="tag">${c.level.toUpperCase()}</span><span class="tag gold">${c.goal.toUpperCase()}</span><span class="tag">${c.days} DAYS</span><span class="tag">${totalSets} ${(S.program[0]&&S.program[0].cardioMain)?"INTERVALS":"SETS"}</span><span class="tag">${c.location==="home"?"HOME PROGRAM":"GYM PROGRAM"}</span><span class="tag blue">WARM-UP ${c.warmup} MIN</span><span class="tag gold">CARDIO ${c.cardioMode.toUpperCase()}</span><span class="tag blue">MOVEMENT TIER: ${levelName(c)}</span></div>`;
  html+=(S.program[0]&&S.program[0].cardioMain)?'':mh151OutputBodyDistribution(c);
  if(S.locked)html+=`<div class="notice"><span class="elite-icon" style="font-style:normal;display:inline-block;color:var(--gold)" aria-hidden="true">🔒</span> Program locked. Use <b>REPLACE</b> on an individual exercise if you want a targeted change.</div>`;
  html+=`<div class="notice" style="margin:0 0 12px"><b>ELITE EXERCISE LIBRARY:</b> ${E.length}+ main movements • ${AUX.length}+ warm-up/cardio/mobility movements • Smart Replace enabled for Home/Gym, level and joint-safety matching.</div>`;
@@ -5658,6 +5808,9 @@ function replaceExercise(day,muscle,index){
  let pool=E.filter(e=>String(e.id)!==oldId&&String(e.muscle)===String(muscle)&&safe(e));
  if(!pool.length)pool=E.filter(e=>String(e.id)!==oldId&&safe(e));
  if(!pool.length)return false;
+ // Equipment/location must be a hard filter, not just a scoring bonus — otherwise "Change Exercise" can
+ // hand a Home + Resistance Band client a Cable or Gym-only movement they have no way to perform.
+ {const compatPool=pool.filter(e=>compatible(e));if(compatPool.length)pool=compatPool;}
  const avoid=new Set([oldMove,...hist]);
  let varied=pool.filter(e=>!avoid.has(moveKey(e)));
  if(!varied.length)varied=pool.filter(e=>moveKey(e)!==oldMove); /* relax to just this slot's current move if history excludes everything */
@@ -8827,6 +8980,10 @@ try{window.buildProgram(false);}catch(e){}
 document.getElementById('trainingSplit')?.addEventListener('change',()=>{
  try{localStorage.setItem('MH_ELITE_ALARM_PROGRAM_SOURCE','main');}catch(e){}
  const pg=document.getElementById('program');
+ // Whatever the person just picked in Training Split (including "None — Auto Adaptive")
+ // must win from this click onward, even if Program Style was manually touched earlier
+ // in this same session — otherwise a stale manual pick silently overrides "None" forever.
+ if(pg)pg.dataset.manual='0';
  const c=getClient();
  if(pg)pg.value=resolveProgramForClient(c);
  try{window.buildProgram(false);}catch(e){}
@@ -14103,7 +14260,7 @@ function food(id){return (window.MH_NUTRITION_FOODS||[]).find(x=>x.id===id)||(wi
 function foodIcon(f){const id=String(f?.id||'').toLowerCase();const n=String(f?.n||'').toLowerCase();const ar=String(f?.ar||'').toLowerCase();const text=id+' '+n+' '+ar;const map=[[/chicken|دجاج|طاووق|شاورما/,'🍗'],[/turkey|ديك رومي/,'🍖'],[/leanbeef|beef|steak|meat|kafta|mortadella|لحم|لحمة|ستيك|كفتة|مرتديلا/,'🥩'],[/salmon|fish|tuna|سمك|سلمون|تونة/,'🐟'],[/egg|بيض/,'🥚'],[/labneh|لبنة/,'🫙'],[/milk|حليب/,'🥛'],[/yogurt|لبن|زبادي/,'🥣'],[/cheese|جبن|جبنة|حلوم|عكاوي|قشقوان|فيتا|قريش/,'🧀'],[/zaatar|زعتر/,'🌿'],[/rice|أرز|رز/,'🍚'],[/pita|bread|toast|خبز|توست|منقوشة/,'🍞'],[/oat|شوفان/,'🥣'],[/bulgur|برغل|فريكة|freekeh|quinoa|كينوا/,'🌾'],[/potato|بطاطا|بطاطس/,'🥔'],[/banana|موز/,'🍌'],[/berries|توت/,'🫐'],[/apple|تفاح/,'🍎'],[/orange|برتقال/,'🍊'],[/dates|تمر/,'🌴'],[/avocado|أفوكادو/,'🥑'],[/olive|زيتون/,'🫒'],[/almond|لوز/,'🌰'],[/walnut|جوز|عين الجمل/,'🌰'],[/peanut|فول سوداني|زبدة الفول/,'🥜'],[/honey|عسل/,'🍯'],[/hummus|حمص/,'🫘'],[/foul|فول/,'🫘'],[/lentil|عدس/,'🫘'],[/falafel|فلافل/,'🧆'],[/tabbouleh|تبولة|سلطة|vegetable|veg|خضار/,'🥗'],[/tomato|طماطم|بندورة/,'🍅'],[/cucumber|خيار/,'🥒'],[/spinach|سبانخ/,'🥬'],[/greenbeans|فاصوليا خضراء/,'🫛'],[/eggplant|باذنجان/,'🍆'],[/molokhia|ملوخية/,'🌿'],[/tahini|طحينة/,'🥣'],[/mujaddara|مجدرة/,'🍲'],[/fatayer|فطائر/,'🥟']];for(const [re,ico] of map)if(re.test(text))return ico;return '🍽️';}
 const templates=(window.MH_MEAL_TEMPLATES||[]);
 function blankNutritionProfile(){return {name:'',gender:'',age:'',weight:'',height:'',targetWeight:'',activity:'',level:'',goal:'',pace:'auto',meals:4,diet:'balanced',allergies:'',avoid:'',notes:'',trainingTime:'',steps:'',waterGoal:'auto'};}
-function profileFromMain(){ return blankNutritionProfile(); }
+function profileFromMain(){const q=id=>document.getElementById(id);const n=id=>q(id)?.value||'';return {name:n('name'),gender:n('gender'),age:n('age'),weight:n('weight'),targetWeight:n('targetWeight'),height:n('height'),activity:n('activity'),level:n('level'),goal:n('goal')};}
 function loadP(){try{
  const x=JSON.parse(localStorage.getItem(NKEY)||'null');
  N3.profile=Object.assign(blankNutritionProfile(),x||{});
@@ -14848,9 +15005,9 @@ if(!window.__MHN3_V94_CONTROLLER__){
  N3.profile immediately and, if a plan already exists, the plan is recalculated
  and re-rendered right away, without requiring the user to reopen or rebuild
  the Nutrition tab. */
-if(false && !window.__MHN3_MAIN_SYNC__){
+if(!window.__MHN3_MAIN_SYNC__){
  window.__MHN3_MAIN_SYNC__=true;
- const MHN3_MAIN_FIELD_IDS=['gender','age','weight','targetWeight','height','activity','level','goal'];
+ const MHN3_MAIN_FIELD_IDS=['name','gender','age','weight','targetWeight','height','activity','level','goal'];
  const mhn3SyncFromMain=function(){
  const main=profileFromMain();
  N3.profile=Object.assign({},N3.profile||{},main);
