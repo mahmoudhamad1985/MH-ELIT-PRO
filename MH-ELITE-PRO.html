@@ -4746,7 +4746,7 @@ function safeReadHistory(){
  try{return JSON.parse(localStorage.getItem("elite_v14_history")||"[]");}
  catch(e){return [];}
 }
-const S={version:18,phase:1,locked:false,program:[],history:safeReadHistory(),chart:null,language:"en",programProgress:{key:"",completedDays:[],unlocked:false},previousExerciseIds:[]};
+const S={version:18,phase:1,locked:false,program:[],history:safeReadHistory(),chart:null,language:"en",programProgress:{key:"",completedDays:[],unlocked:false},previousExerciseIds:[],dayCompletionMode:"auto"};
 try{window.S=S;}catch(e){}
 const UNLOCK_PCT=75;
 const PHASE_NAMES=["FOUNDATION","DEVELOPMENT","ADVANCED","ELITE"];
@@ -5800,6 +5800,10 @@ function renderProgram(c,totalSets){ totalSets=totalSets??S.program.reduce((n,d)
  html+=(S.program[0]&&S.program[0].cardioMain)?'':mh151OutputBodyDistribution(c);
  if(S.locked)html+=`<div class="notice"><span class="elite-icon" style="font-style:normal;display:inline-block;color:var(--gold)" aria-hidden="true">🔒</span> Program locked. Use <b>REPLACE</b> on an individual exercise if you want a targeted change.</div>`;
  html+=`<div class="notice" style="margin:0 0 12px"><b>ELITE EXERCISE LIBRARY:</b> ${E.length}+ main movements • ${AUX.length}+ warm-up/cardio/mobility movements • Smart Replace enabled for Home/Gym, level and joint-safety matching.</div>`;
+ html+=(()=>{const ar=S.language==='ar',manual=S.dayCompletionMode==='manual';return `<div class="mh-day-mode">
+  <div class="mh-day-mode-txt"><b>${ar?'طريقة إنهاء اليوم':'Day Finish Mode'}</b><small>${manual?(ar?'يدوي — اضغط "إنهاء اليوم" مباشرة بدون تشغيل المؤقّت الذكي.':'Manual — press FINISH DAY directly, no need to run the Smart Timer.'):(ar?'تلقائي — لازم تخلّص التمرين بالمؤقّت الذكي أولًا.':'Automatic — the Smart Timer must actually finish first.')}</small></div>
+  <button type="button" class="mh-day-mode-switch${manual?' on':''}" onclick="toggleDayCompletionMode()" aria-label="${ar?'تبديل طريقة إنهاء اليوم':'Toggle day finish mode'}"><span class="mh-day-mode-lbl off">${ar?'تلقائي':'AUTO'}</span><i></i><span class="mh-day-mode-lbl on">${ar?'يدوي':'MANUAL'}</span></button>
+ </div>`})();
  html+=`<div class="program">`;
  S.program.forEach(d=>{
  // Sequential day unlock: Day 1 is always open. Day N (N>1) stays locked/collapsed
@@ -5810,7 +5814,7 @@ function renderProgram(c,totalSets){ totalSets=totalSets??S.program.reduce((n,d)
   html+=`<div class="day day-locked"><div class="day-head"><div><h3>DAY ${d.day} — ${d.name}</h3><div class="day-locked-note">🔒 ${ar?`أكمل اليوم ${d.day-1} أولًا لفتح هذا اليوم`:`Complete Day ${d.day-1} first to unlock this day`}</div></div></div></div>`;
   return;
  }
- html+=`<div class="day"><div class="day-head"><div><h3>DAY ${d.day} — ${d.name}</h3><div class="sub">${c.duration} min target • <b>${S.language==='ar'?'الوقت المتوقع':'Estimated'}: ${d.estimatedMinutes||c.duration} min</b> • Smart progression enabled</div></div><button type="button" class="day-complete-btn ${isDayCompleted(d.day)?'done':''}" onclick="toggleDay(${d.day})">${isDayCompleted(d.day)?'✓ COMPLETED':((window.MH_PLAN&&MH_PLAN.hasFinishedSession(d.day))?'✓ CONFIRM DAY':(S.language==='ar'?'🔒 أنهِ التمرين أولًا':'🔒 FINISH WORKOUT FIRST'))}</button></div>`;
+ html+=`<div class="day"><div class="day-head"><div><h3>DAY ${d.day} — ${d.name}</h3><div class="sub">${c.duration} min target • <b>${S.language==='ar'?'الوقت المتوقع':'Estimated'}: ${d.estimatedMinutes||c.duration} min</b> • Smart progression enabled</div></div><button type="button" class="day-complete-btn ${isDayCompleted(d.day)?'done':''}" onclick="toggleDay(${d.day})">${isDayCompleted(d.day)?'✓ COMPLETED':(S.dayCompletionMode==='manual'?(S.language==='ar'?'✓ إنهاء اليوم':'✓ FINISH DAY'):((window.MH_PLAN&&MH_PLAN.hasFinishedSession(d.day))?'✓ CONFIRM DAY':(S.language==='ar'?'🔒 أنهِ التمرين أولًا':'🔒 FINISH WORKOUT FIRST')))}</button></div>`;
  html+=`<div class="group" style="border-color:#f5c84255;background:#f5c84208"><div class="group-title" style="color:var(--gold)"><span class="elite-icon" style="font-style:normal;display:inline-block" aria-hidden="true">💚</span> 01 • CARDIO WARM-UP • ${d.cardioWarmup.length} MOVES</div>${d.cardioWarmup.map((e,i)=>renderAuxCard(e,'cardioWarmup',c,d.day,i)).join('')}<div class="notice" style="margin-top:8px"><b>Adaptive target:</b> ${c.level.toUpperCase()} • ${c.level==="beginner"?"low-impact pulse raiser":c.level==="intermediate"?"moderate rhythm":"high-performance pulse raiser"} • Smart Timer uses work/transition intervals.</div></div>`;
  html+=`<div class="group" style="border-color:#4fc3f755;background:#4fc3f70b"><div class="group-title" style="color:var(--accent)"><span class="elite-icon" style="font-style:normal;display:inline-block" aria-hidden="true">🏃</span> 02 • DYNAMIC MOBILITY • ${d.mobility.length} MOVES</div>${d.mobility.map((e,i)=>renderAuxCard(e,'mobility',c,d.day,i)).join('')}</div>`;
  html+=`<div class="group" style="border-color:#7ee2aa55;background:#7ee2aa0b"><div class="group-title" style="color:var(--ok)"><span class="elite-icon" style="font-style:normal;display:inline-block" aria-hidden="true">⚡</span> 03 • ACTIVATION • ${d.activation.length} MOVES</div>${d.activation.map((e,i)=>renderAuxCard(e,'activation',c,d.day,i)).join('')}</div>`;
@@ -6534,18 +6538,36 @@ function toggleDay(day){
  recordDay(day,!isDayCompleted(day));
 }
 
-/* COMPLETE DAY works only after that day's workout was FINISHED in the Smart Timer (finishing also marks it automatically). */
+/* Day-completion mode: AUTO (default) requires the Smart Timer to actually finish the session
+   before FINISH DAY can be pressed. MANUAL lets the client mark a day done directly — for people
+   who train along to their own music/timer and don't want to keep the in-app timer running.
+   The 30-Day Challenge stays strict either way: it only credits a day when the Smart Timer
+   genuinely finished that session, regardless of this setting. */
+function toggleDayCompletionMode(){
+ S.dayCompletionMode=(S.dayCompletionMode==="manual")?"auto":"manual";
+ saveState(false);
+ if(S.program.length){
+ const totalSets=S.program.reduce((n,d)=>n+d.groups.reduce((x,g)=>x+g.exercises.reduce((z,e)=>z+e.settings.sets,0),0),0);
+ renderProgram(getClient(),totalSets);
+ }
+ try{showEliteToast?.(S.language==="ar"?(S.dayCompletionMode==="manual"?"وضع الإنهاء اليدوي مفعّل":"وضع الإنهاء التلقائي مفعّل"):(S.dayCompletionMode==="manual"?"Manual finish mode is ON":"Automatic finish mode is ON"))}catch(e){}
+}
+
+/* In AUTO mode, COMPLETE DAY works only after that day's workout was FINISHED in the Smart Timer
+   (finishing also marks it automatically). In MANUAL mode the client can press FINISH DAY directly. */
 function recordDay(day,checked){
  const P=window.MH_PLAN;if(!P)return;
  const ar=S.language==="ar",pc=document.getElementById("progressControls");
+ const manual=S.dayCompletionMode==="manual";
  if(checked){
- if(!P.hasFinishedSession(day)){
+ if(!manual&&!P.hasFinishedSession(day)){
  const m=ar?`🔒 أنهِ تمرين اليوم ${day} بالمؤقّت الذكي أولًا ليُحتسب.`:`🔒 Finish Day ${day}'s workout in the Smart Timer first — then it is counted.`;
  if(pc)pc.innerHTML=m;try{showEliteToast?.(m)}catch(e){}
  return;
  }
  P.mark(day);
- try{window.MH_CHALLENGE?.markToday('training')}catch(e){}
+ // The 30-Day Challenge only ever credits a REAL finished Smart Timer session — never a manual mark.
+ if(P.hasFinishedSession(day)){try{window.MH_CHALLENGE?.markToday('training')}catch(e){}}
  }else P.unmark(day);
  saveState(false);
  updateDashboard();
@@ -6598,11 +6620,11 @@ function drawChart(){
  data.forEach((v,i)=>{const x=pad+(w-pad*2)*(i/Math.max(1,data.length-1));const y=h-pad-(h-pad*2)*(v/max);ctx.fillStyle="#4fc3f7";ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();});
 }
 function saveState(showAlert=false){
- let c=getClient();if(window.MH_HEALTH)c=MH_HEALTH.formClient(c);localStorage.setItem("elite_v14_state",JSON.stringify({client:c,phase:S.phase,locked:S.locked,program:S.program,language:S.language,programProgress:S.programProgress,previousExerciseIds:S.previousExerciseIds}));
+ let c=getClient();if(window.MH_HEALTH)c=MH_HEALTH.formClient(c);localStorage.setItem("elite_v14_state",JSON.stringify({client:c,phase:S.phase,locked:S.locked,program:S.program,language:S.language,programProgress:S.programProgress,previousExerciseIds:S.previousExerciseIds,dayCompletionMode:S.dayCompletionMode}));
  saveHistory();if(showAlert){try{showEliteToast?.("Saved successfully");}catch(e){}}
 }
 function loadState(){
- try{let x=JSON.parse(localStorage.getItem("elite_v14_state"));if(!x)return;let c=x.client||{};Object.entries({name:c.name,location:c.location,gender:c.gender,age:c.age,weight:c.weight,height:c.height,level:c.level,days:c.days,duration:c.duration,goal:c.goal,equipment:c.equipment,focus:c.focus,bodyFocus:c.bodyFocus,program:c.program,trainingSplit:c.trainingSplit,absFrequency:c.absFrequency,activity:c.activity,progression:c.progression}).forEach(([k,v])=>{let el=document.getElementById(k);if(el&&v!==undefined)el.value=v});try{MH_FOCUS.sync();}catch(_){}if(c.limitations)document.querySelectorAll(".lim").forEach(el=>{if(c.limitations[el.dataset.joint])el.value=c.limitations[el.dataset.joint]});S.phase=x.phase||1;S.locked=!!x.locked;S.programProgress=x.programProgress||{key:"",completedDays:[],unlocked:false};S.previousExerciseIds=x.previousExerciseIds||[];if(x.program){S.program=x.program.map(d=>({...d,cardioWarmup:d.cardioWarmup||d.warmup||[],mobility:d.mobility||[],activation:d.activation||[],cardio:d.cardio||[],stretches:d.stretches||[]}));const c=getClient();S.program.forEach(d=>{const used=new Set([...(d.groups||[]).flatMap(g=>g.exercises||[]),...(d.cardioWarmup||[]),...(d.cardio||[]),...(d.stretches||[])].map(e=>e.id));if(!d.mobility.length)d.mobility=dynamicMobilityForDay(c,used,d.groups||[]).map(e=>({...e,_type:'mobility'}));if(!d.activation.length)d.activation=activationForDay(c,used,d.groups||[]).map(e=>({...e,_type:'activation'}));});renderProgram(c)}renderNutrition(getClient());renderUnlock()}catch(e){}
+ try{let x=JSON.parse(localStorage.getItem("elite_v14_state"));if(!x)return;let c=x.client||{};Object.entries({name:c.name,location:c.location,gender:c.gender,age:c.age,weight:c.weight,height:c.height,level:c.level,days:c.days,duration:c.duration,goal:c.goal,equipment:c.equipment,focus:c.focus,bodyFocus:c.bodyFocus,program:c.program,trainingSplit:c.trainingSplit,absFrequency:c.absFrequency,activity:c.activity,progression:c.progression}).forEach(([k,v])=>{let el=document.getElementById(k);if(el&&v!==undefined)el.value=v});try{MH_FOCUS.sync();}catch(_){}if(c.limitations)document.querySelectorAll(".lim").forEach(el=>{if(c.limitations[el.dataset.joint])el.value=c.limitations[el.dataset.joint]});S.phase=x.phase||1;S.locked=!!x.locked;S.programProgress=x.programProgress||{key:"",completedDays:[],unlocked:false};S.previousExerciseIds=x.previousExerciseIds||[];S.dayCompletionMode=(x.dayCompletionMode==="manual")?"manual":"auto";if(x.program){S.program=x.program.map(d=>({...d,cardioWarmup:d.cardioWarmup||d.warmup||[],mobility:d.mobility||[],activation:d.activation||[],cardio:d.cardio||[],stretches:d.stretches||[]}));const c=getClient();S.program.forEach(d=>{const used=new Set([...(d.groups||[]).flatMap(g=>g.exercises||[]),...(d.cardioWarmup||[]),...(d.cardio||[]),...(d.stretches||[])].map(e=>e.id));if(!d.mobility.length)d.mobility=dynamicMobilityForDay(c,used,d.groups||[]).map(e=>({...e,_type:'mobility'}));if(!d.activation.length)d.activation=activationForDay(c,used,d.groups||[]).map(e=>({...e,_type:'activation'}));});renderProgram(c)}renderNutrition(getClient());renderUnlock()}catch(e){}
 }
 function resetAll(){if(!confirm("Reset ELITE V14 saved data?"))return;localStorage.removeItem("elite_v14_state");localStorage.removeItem("elite_v14_history");location.reload()}
 function toggleLang(){S.language=S.language==="en"?"ar":"en";mhSetRoot('dir',S.language==="ar"?"rtl":"ltr");mhSetRoot('lang',S.language==="ar"?"ar":"en");document.getElementById("langBtn").textContent=S.language==="en"?"عربي":"English";speak(S.language==="ar"?"تم تغيير اللغة":"Language changed")}
@@ -20238,6 +20260,20 @@ try{
 .program .day.day-locked .day-head{background:rgba(255,255,255,.02)}
 .program .day.day-locked .day-head>div:first-child::before{background:linear-gradient(135deg,#2a2f38,#14171c);border-color:rgba(255,255,255,.14);color:#8a94a3}
 .program .day-locked-note{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11.5px;font-weight:800;color:#c7a24a;background:#f5c8421c;border:1px solid #f5c84240;border-radius:10px;padding:8px 12px}
+.mh-day-mode{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(79,195,247,.10),rgba(79,195,247,.03));border:1px solid rgba(79,195,247,.28)}
+.mh-day-mode-txt{min-width:0}
+.mh-day-mode-txt b{display:block;font-size:12.5px;color:#eaf6ff;font-weight:900}
+.mh-day-mode-txt small{display:block;margin-top:3px;font-size:10.5px;line-height:1.5;color:var(--muted)}
+.mh-day-mode-switch{position:relative;flex:0 0 auto;display:flex;align-items:center;gap:6px;min-height:34px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);cursor:pointer}
+.mh-day-mode-switch i{width:34px;height:20px;border-radius:999px;background:rgba(255,255,255,.18);position:relative;display:inline-block;transition:background .2s ease}
+.mh-day-mode-switch i::before{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#dfe8f2;transition:transform .2s ease}
+.mh-day-mode-switch.on i{background:#f5c842}
+.mh-day-mode-switch.on i::before{transform:translateX(14px);background:#1b1608}
+.mh-day-mode-lbl{font-size:9.5px;font-weight:900;letter-spacing:.03em;color:var(--muted)}
+.mh-day-mode-switch.on .mh-day-mode-lbl.off{color:var(--muted)}
+.mh-day-mode-switch.on .mh-day-mode-lbl.on{color:#f5c842}
+.mh-day-mode-switch:not(.on) .mh-day-mode-lbl.off{color:#7ee2aa}
+@media(max-width:520px){.mh-day-mode{flex-direction:column;align-items:stretch}.mh-day-mode-switch{align-self:flex-end}}
 .program .day-complete-btn.done{
  background:linear-gradient(135deg,rgba(126,226,170,.18),rgba(79,195,247,.08));
  border-color:rgba(126,226,170,.48);
