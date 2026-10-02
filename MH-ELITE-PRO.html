@@ -19015,6 +19015,7 @@ setTimeout(v24Init,0);window.MH_V25_ADVANCED_SYSTEMS_AUTO_MANUAL=true;
 (function(){'use strict';
 const ACCEPT_LEGACY=true;
 const PUB={"x": "b504042744ee0014650c40695942717deda3a71ee51edc56f129eaf854f67db9", "y": "9b7a4fc0969d759f3da706d6c80b857df9821a278e96f0d4965a19f9ff9a166a"};
+const PUB2={"x": "76cb1bb095700f328d53b589d4f1a25c806eef7587f15dff3cbf318c2966de48", "y": "cafdf1ffb90f6cbfae7ffdb4ccae46cc858c364284c227addd3e17abfde33fb9"};
 const STORE='MH_ELITE_LICENSE_V10',USED='MH_ELITE_LICENSE_USED_V10',TRIAL='MH_ELITE_TRIAL_USED_V10',SEEN='MH_ELITE_LASTSEEN_V10';
 const _LK1=(0x3f00^0x2397),_LK2=(0xbc00^0x1471); /* split constants: legacy-code pepper (_LK1) and license-record integrity pepper (_LK2) */
 const EPOCH=Date.UTC(2024,0,1)/86400000; /* "activate before" is stored as days since 2024-01-01 */
@@ -19084,7 +19085,7 @@ function parseSigned(raw){
  const c=String(raw||'').replace(/\s+/g,'');const m=c.match(/^MH1-([A-Za-z0-9_-]{14})\.([A-Za-z0-9_-]{86})$/);if(!m)return null;
  let pay,sig;try{pay=b64u(m[1]);sig=b64u(m[2])}catch(e){return null}
  if(pay.length!==10||pay[0]!==1||!TYPES[pay[1]]||sig.length!==64)return null;
- if(!P256.verify(PUB,pay,sig))return {bad:true};
+ if(!P256.verify(PUB,pay,sig)&&!P256.verify(PUB2,pay,sig))return {bad:true};
  const before=(pay[2]<<8)|pay[3];
  return {kind:'signed',type:pay[1],before,serial:hex(pay.slice(4)),id:'S:'+hex(pay.slice(4))};
 }
@@ -19216,6 +19217,17 @@ async function activate(){
  G.seen=Math.max(G.seen,now);
  await persist();setMsg('');const inp=$('mhLicCode');if(inp)inp.textContent='';hideGate();pill(G.lic);toast(G.lic);
 }
+/* ------------------------------ activation link ------------------------------ */
+async function linkActivate(){
+ let code='';try{const q=new URLSearchParams(location.search);code=q.get('code')||q.get('activate')||'';if(!code&&location.hash){const h=new URLSearchParams(location.hash.replace(/^#/,''));code=h.get('code')||''}}catch(_){}
+ code=String(code||'').trim().replace(/\s+/g,'');if(!code)return;
+ try{const u=new URL(location.href);u.searchParams.delete('code');u.searchParams.delete('activate');let h=u.hash;if(/(^|[#&])code=/.test(h))h='';history.replaceState(history.state,'',u.pathname+(u.search||'')+h)}catch(_){}
+ try{const pr=parseSigned(code)||parseLegacy(code);if(pr&&!pr.bad&&G.used.indexOf(pr.id)>=0&&valid(G.lic))return}catch(_){} /* same link opened again on an active device: nothing to do */
+ const before=G.lic;let inp=$('mhLicCode');if(!inp){const m=$('mhLicCodeMount');if(m){inp=document.createElement('div');inp.id='mhLicCode';inp.className='mh-lic-code-editor';inp.contentEditable='true';m.replaceChildren(inp)}}
+ if(!inp)return;inp.textContent=code;await activate();
+ if(G.lic!==before&&valid(G.lic))return; /* activated — activate() already hid the gate and showed the licence toast */
+ const g=$('mhLicenseGate');if(g){g.classList.add('show');const c=$('mhLicClose');if(c)c.hidden=!valid(G.lic);const w=$('mhLicCodeWrap');if(w)w.classList.add('open')}
+}
 /* ------------------------------ safe reset / coach test ------------------------------ */
 async function resetCurrentLicense(){
  /* Customer-safe reset: ends the CURRENT access only. Trial history and used-code history stay intact,
@@ -19276,6 +19288,7 @@ async function init(){
  G=merge([fromLS()]);evaluate(); /* immediate answer from localStorage … */
  await loadAll();evaluate(); /* … then repaired / confirmed from the other stores */
  if(valid(G.lic))toast(G.lic);
+ try{await linkActivate()}catch(_){}
  setInterval(()=>{evaluate(true);if(!clockBad())persist()},30000);
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')evaluate(true)});
  new MutationObserver(()=>{copy();if(G.lic)pill(G.lic)}).observe(document.documentElement,{attributes:true,attributeFilter:['lang','dir']});
