@@ -19226,7 +19226,8 @@ async function linkActivate(){
  const before=G.lic;let inp=$('mhLicCode');if(!inp){const m=$('mhLicCodeMount');if(m){inp=document.createElement('div');inp.id='mhLicCode';inp.className='mh-lic-code-editor';inp.contentEditable='true';m.replaceChildren(inp)}}
  if(!inp)return;inp.textContent=code;await activate();
  if(G.lic!==before&&valid(G.lic))return; /* activated — activate() already hid the gate and showed the licence toast */
- const g=$('mhLicenseGate');if(g){g.classList.add('show');const c=$('mhLicClose');if(c)c.hidden=!valid(G.lic);const w=$('mhLicCodeWrap');if(w)w.classList.add('open')}
+ if(valid(G.lic)){hideGate();return} /* the device already has an active licence: a failed link (e.g. an old link reopened from a home-screen icon) must never block the app */
+ const g=$('mhLicenseGate');if(g){g.classList.add('show');const c=$('mhLicClose');if(c)c.hidden=true;const w=$('mhLicCodeWrap');if(w)w.classList.add('open')}
 }
 /* ------------------------------ safe reset / coach test ------------------------------ */
 async function resetCurrentLicense(){
