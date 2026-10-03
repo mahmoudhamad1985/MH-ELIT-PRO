@@ -3015,7 +3015,7 @@ html[dir="rtl"] #mhWelcomeGate .mh-wg-trial{left:auto;right:50%;transform:transl
 <div class="mhn3-field"><label>TARGET WEIGHT (kg)</label><input id="mhn3_targetWeight" max="300" min="30" placeholder="Target weight" step="0.1" type="number" value=""/></div>
 <div class="mhn3-field"><label>ACTIVITY</label><select id="mhn3_activity"><option disabled="" selected="" value="">Select activity</option><option value="low">Low</option><option value="moderate">Moderate</option><option value="high">High</option><option value="veryhigh">Very High</option></select></div>
 <div class="mhn3-field"><label>TRAINING LEVEL</label><select id="mhn3_level"><option disabled="" selected="" value="">Select level</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option><option value="elite">Elite</option></select></div>
-<div class="mhn3-field"><label>PRIMARY GOAL</label><select id="mhn3_goal"><option disabled="" selected="" value="">Select goal</option><option value="fatloss">Fat Loss</option><option value="hypertrophy">Muscle Building</option><option value="strength">Strength</option><option value="glute">Glute Focus</option><option value="recomp">Body Recomposition</option></select></div>
+<div class="mhn3-field"><label>PRIMARY GOAL</label><select id="mhn3_goal"><option disabled="" selected="" value="">Select goal</option><option value="fatloss">Cut / Fat Loss</option><option value="maintenance">Maintenance</option><option value="recomp">Lean Mass / Recomposition</option><option value="leanbulk">Lean Bulk</option><option value="hypertrophy">Bulk / Muscle Building</option><option value="strength">Strength</option><option value="glute">Glute Focus</option></select></div>
 <div class="mhn3-field"><label>MEALS / DAY</label><select id="mhn3_meals"><option value="3">3</option><option selected="" value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
 <div class="mhn3-field" style="grid-column:1/-1"><label>ALLERGIES / RESTRICTIONS</label><textarea id="mhn3_allergies" placeholder="Optional" style="width:100%;min-height:70px"></textarea></div>
 <div class="mhn3-field" style="grid-column:1/-1"><label>FOODS TO AVOID</label><textarea id="mhn3_avoid" placeholder="Optional" style="width:100%;min-height:70px"></textarea></div>
@@ -6586,6 +6586,7 @@ function quickActionIcons(eId,day,muscle,index){
  <button type="button" class="ex-quick gif" onclick="googleVideoSearch('${id}')" aria-label="Search exercise video on YouTube" title="Watch Exercise Video">
  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg><span class="quick-label">Video</span>
  </button>
+ ${window.MH_FORMCAM?MH_FORMCAM.btn(eId):''}
  <button type="button" class="ex-quick benefits" onclick="showBenefits('${id}')" aria-label="View exercise benefits" title="View Exercise Benefits"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10v6"></path><circle cx="12" cy="7" r=".7" fill="currentColor" stroke="none"></circle></svg><span class="quick-label">Benefits</span></button>
  <button type="button" class="ex-quick change ex-replace-btn" data-change-exercise-id="${id}" data-change-day="${day}" data-change-muscle="${String(muscle).replace(/"/g,'&quot;')}" data-change-index="${index}" aria-label="Change exercise" title="Change Exercise">
  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5"></path><path d="M4 17v-5h5"></path><path d="M19 12a7 7 0 0 0-12-4L5 9"></path><path d="M5 12a7 7 0 0 0 12 4l2-1"></path></svg><span class="quick-label" data-replace-label>🔄 Change Exercise</span>
@@ -15331,7 +15332,7 @@ function calc(p){
  p.activity=String(p.activity||q('mhn3_activity')?.value||q('activity')?.value||'moderate').toLowerCase();
  p.goal=String(p.goal||q('mhn3_goal')?.value||q('goal')?.value||'hypertrophy').toLowerCase();
  p.pace=String(p.pace||q('mhn3_pace')?.value||'auto').toLowerCase();
- const alias={loss:'fatloss',fastloss:'fatloss',cut:'fatloss',shredding:'fatloss',bulk:'hypertrophy',muscle:'hypertrophy',maintain:'maintenance'};
+ const alias={loss:'fatloss',fastloss:'fatloss',cut:'fatloss',shredding:'fatloss',bulk:'hypertrophy',muscle:'hypertrophy',maintain:'maintenance',leangain:'leanbulk',cleanbulk:'leanbulk',leanmass:'recomp'};
  p.goal=alias[p.goal]||p.goal;
  /* DIET STYLE (Balanced / Mediterranean / High Protein / Lower Carb). Falls back to the saved Nutrition profile so the
  dashboard and BMI card, which call this without a diet, always agree with the Nutrition tab. Calories never change. */
@@ -15364,16 +15365,22 @@ function calc(p){
  else if(p.goal==='strength') adj=Math.min(-.13,adj+.02);
  else if(p.goal==='fatloss') adj=Math.max(-.28,adj-.02);
  else if(p.goal==='recomp') adj=Math.min(-.12,adj+.025);
+ if(p.goal==='maintenance') adj=0; /* goal wins: hold weight */
+ else if(p.goal==='leanbulk') adj=0; /* contradictory target: hold calories, keep protein high */
  }else if(direction==='gain'){
  const paceSurplus=p.pace==='slow'?.05:p.pace==='fast'?.10:.075;
  adj=paceSurplus;
- if(p.goal==='hypertrophy') adj=Math.max(adj,.08);
+ if(p.goal==='hypertrophy') adj=p.pace==='slow'?.13:p.pace==='fast'?.18:.16; /* BULK ~ +400-500 kcal */
+ else if(p.goal==='leanbulk') adj=p.pace==='slow'?.06:p.pace==='fast'?.10:.085; /* LEAN BULK ~ +200-300 kcal */
+ else if(p.goal==='maintenance') adj=0;
  else if(p.goal==='strength') adj=Math.max(.055,Math.min(adj,.075));
  else if(p.goal==='fatloss') adj=.02;
  else if(p.goal==='recomp') adj=.03;
  else if(p.goal==='glute') adj=.07;
  }else{
- if(p.goal==='hypertrophy') adj=.08;
+ if(p.goal==='hypertrophy') adj=p.pace==='slow'?.12:p.pace==='fast'?.18:.15;
+ else if(p.goal==='leanbulk') adj=p.pace==='slow'?.06:p.pace==='fast'?.10:.08;
+ else if(p.goal==='maintenance') adj=0;
  else if(p.goal==='strength') adj=.04;
  else if(p.goal==='fatloss') adj=-.15;
  else if(p.goal==='recomp') adj=-.07;
@@ -15381,7 +15388,7 @@ function calc(p){
  }
  const bmiCalc=p.weight/Math.pow(p.height/100,2);
  if(bmiCalc<18.5&&adj<0){adj=0;flags.push('underweight');}
- adj=clamp(adj,-.28,.12);
+ adj=clamp(adj,-.28,.18);
  /* V128 age & medical safety: under 18 => never a calorie deficit (growth); 65+ => deficit capped at 15%; BMI < 17 => medical-review flag. */
  if(p.age<18){if(adj<0)adj=0;flags.push('minor');}
  else if(p.age>=65){if(adj<-.15)adj=-.15;flags.push('senior');}
@@ -15400,7 +15407,7 @@ function calc(p){
  const levelProtein={beginner:1.65,intermediate:1.80,advanced:1.95,elite:2.05}[levelKey];
  let proteinFactor=levelProtein;
  if(direction==='loss') proteinFactor+=.10;
- if(p.goal==='hypertrophy'||p.goal==='recomp'||p.goal==='glute') proteinFactor+=.10;
+ if(p.goal==='hypertrophy'||p.goal==='leanbulk'||p.goal==='recomp'||p.goal==='glute') proteinFactor+=.10;
  else if(p.goal==='strength') proteinFactor+=.05;
  if(p.diet==='highprotein')proteinFactor=Math.max(proteinFactor,2.1); /* High Protein: 2.1–2.2 g/kg */
  proteinFactor=clamp(proteinFactor,1.6,2.2);
@@ -15424,7 +15431,7 @@ function calc(p){
  muscle / strength goals keep >= 3 g/kg, glute >= 2 g/kg, fat loss / recomp >= 1.5 g/kg (never under 60 g).
  Fat is capped at 40% of calories; anything above the cap returns to carbohydrate below. */
  if(p.diet==='lowcarb'){
- const gk=(p.goal==='hypertrophy'||p.goal==='strength')?3.0:(p.goal==='glute'?2.0:1.5);
+ const gk=(p.goal==='hypertrophy'||p.goal==='leanbulk'||p.goal==='strength')?3.0:(p.goal==='glute'?2.0:1.5);
  const carbLow=Math.max(minCarb,Math.round(p.weight*gk),Math.round(carb*0.65));
  if(carbLow<carb)fat=Math.max(fat,Math.min(Math.round(fat+(carb-carbLow)*4/9),Math.floor(kcal*0.40/9)));
  }
@@ -15640,7 +15647,7 @@ function getTemplate(index,p){
 }
 function optionFor(target,opt,p){return fit(getTemplate(opt,p),target);}
 function renderForm(p,ar){
- const goalOpts=[['fatloss','خسارة الدهون','Fat Loss'],['hypertrophy','بناء العضلات','Muscle Building'],['strength','القوة','Strength'],['glute','تركيز الألوية','Glute Focus'],['recomp','إعادة تركيب الجسم','Body Recomposition']];
+ const goalOpts=[['fatloss','تنشيف / خسارة الدهون','Cut / Fat Loss'],['maintenance','تثبيت الوزن','Maintenance'],['recomp','لين ماس / إعادة تركيب الجسم','Lean Mass / Recomposition'],['leanbulk','لين بالك (زيادة عضلية نظيفة)','Lean Bulk'],['hypertrophy','تضخيم / بناء العضلات','Bulk / Muscle Building'],['strength','القوة','Strength'],['glute','تركيز الألوية','Glute Focus']];
  const goals=`<option value="" ${!p.goal?'selected':''} disabled>${ar?'اختر الهدف':'Select goal'}</option>`+goalOpts.map(x=>`<option value="${x[0]}" ${p.goal===x[0]?'selected':''}>${ar?x[1]:x[2]}</option>`).join('');
  const pace=[['auto','تلقائي','Auto'],['slow','بطيء / محافظ','Slow / Conservative'],['fast','سريع / أعلى','Fast / Higher']].map(x=>`<option value="${x[0]}" ${p.pace===x[0]?'selected':''}>${ar?x[1]:x[2]}</option>`).join('');
  return `<section class="mhn3-section"><div class="mhn3-head"><div class="mhn3-title"><span class="mhn3-num">01</span><div><strong>${ar?'ملف العميل الغذائي الرسمي':'Official Nutrition Client Profile'}</strong><small>${ar?'هذه الصفحة هي المصدر الرئيسي لبناء الخطة الغذائية':'This profile is the source of truth for the nutrition plan'}</small></div></div></div><div class="mhn3-form">
@@ -15953,7 +15960,7 @@ try{if(Object.keys(N3.completed||{}).length&&localStorage.getItem('MH_N_DONE_DAY
  </div>
  </div>
  </article>`;}).join('');
- const goalAr={fatloss:'خسارة الدهون',hypertrophy:'بناء العضلات',strength:'القوة',glute:'تركيز الألوية',recomp:'إعادة تركيب الجسم'}; const sum=meals?targets.reduce((a,t)=>{a.k+=t.k;a.p+=t.p;a.c+=t.c;a.f+=t.f;return a},{k:0,p:0,c:0,f:0}):{k:0,p:0,c:0,f:0};
+ const goalAr=ar?{fatloss:'تنشيف / خسارة الدهون',maintenance:'تثبيت الوزن',leanbulk:'لين بالك',hypertrophy:'تضخيم / بناء العضلات',strength:'القوة',glute:'تركيز الألوية',recomp:'لين ماس / إعادة تركيب'}:{fatloss:'Cut / Fat Loss',maintenance:'Maintenance',leanbulk:'Lean Bulk',hypertrophy:'Bulk / Muscle Building',strength:'Strength',glute:'Glute Focus',recomp:'Lean Mass / Recomp'}; const sum=meals?targets.reduce((a,t)=>{a.k+=t.k;a.p+=t.p;a.c+=t.c;a.f+=t.f;return a},{k:0,p:0,c:0,f:0}):{k:0,p:0,c:0,f:0};
  return `<section class="mhn3-section"><div class="mhn3-head"><div class="mhn3-title"><span class="mhn3-num">02</span><div><strong>${ar?'الأهداف اليومية':'Daily Nutrition Targets'}</strong><small>${ar?'الحساب المركزي الذي ستبنى عليه كل الوجبات والبدائل':'Central targets used by every meal and replacement'}</small></div></div></div><div class="mhn3-kpis"><div class="mhn3-kpi"><small>BMR</small><b>${n.bmr}</b><span>kcal</span></div><div class="mhn3-kpi"><small>TDEE</small><b>${n.tdee}</b><span>kcal</span></div><div class="mhn3-kpi"><small>TARGET</small><b>${n.kcal}</b><span>kcal/day</span></div><div class="mhn3-kpi"><small>PROTEIN</small><b>${n.protein}g</b><span>${Math.round(n.protein*4/n.kcal*100)}%</span></div><div class="mhn3-kpi"><small>CARBS</small><b>${n.carb}g</b><span>${Math.round(n.carb*4/n.kcal*100)}%</span></div><div class="mhn3-kpi"><small>FATS</small><b>${n.fat}g</b><span>${Math.round(n.fat*9/n.kcal*100)}%</span></div></div><div class="mhn3-note">${ar?'الترطيب التقريبي':'Estimated hydration'}: <b>${n.water} L/day</b> • ${ar?'الهدف':'Goal'}: <b>${escN(goalAr[p.goal]||p.goal)}</b> • ${ar?'نمط الطعام':'Diet style'}: <b>${escN((MH_DIET_STYLES.find(d=>d.k===n.diet)||MH_DIET_STYLES[0])[ar?'ar':'en'])}</b> • ${ar?'الوزن المستهدف':'Target weight'}: <b>${p.targetWeight} kg</b> • ${ar?'مستوى التدريب':'Training level'}: <b>${escN(p.level)}</b> • <b>V128 • AUDITED SINGLE ENGINE</b> • ${ar?'اتجاه الطاقة':'Energy mode'}: <b>${escN(n.energyDirection)}</b> • ${ar?'تعديل السعرات':'Calorie adjustment'}: <b>${n.calorieAdjustment}%</b></div>${(()=>{const d=__dd;if(!d.k)return '';const pc=(a,b)=>b?Math.round((a/b-1)*100):0,sg=v=>(v>0?'+':'')+v+'%';return `<div class="mhn3-note" style="margin-top:8px"><b>${ar?'المجموع الفعلي للوجبات المعروضة':'Planned meals total'}</b>: ${Math.round(d.k)} kcal (${sg(pc(d.k,n.kcal))}) • P ${Math.round(d.p)}g (${sg(pc(d.p,n.protein))}) • C ${Math.round(d.c)}g (${sg(pc(d.c,n.carb))}) • F ${Math.round(d.f)}g (${sg(pc(d.f,n.fat))}) — ${ar?'مقابل الهدف اليومي':'vs the daily target'}</div>`;})()}${(n.flags||[]).map(f=>`<div class="mhn3-note" style="margin-top:8px;border:1px solid #f5c84255;background:#f5c8420b">⚠️ ${escN(mhCalcFlagText(f,n,ar))}</div>`).join('')}</section>
  <section class="mhn3-section"><div class="mhn3-head"><div class="mhn3-title"><span class="mhn3-num">03</span><div><strong>${ar?'خطة الوجبات الذكية':'Smart Meal Plan'}</strong><small>${ar?'غيّر أي وجبة دون كسر هدفها الغذائي':'Change any meal without breaking its nutrition target'}</small></div></div><span class="mhn3-badge">${p.meals} ${ar?'وجبات':'MEALS'}</span></div>${window.MH_NTODAY?MH_NTODAY.dash(n,ar,targets.length):''}${window.MH_FOODDB?MH_FOODDB.bar(ar):''}<div id="mhDailyRotationControl" style="margin:0 0 12px"></div><div class="mhn3-meals">${meals}</div><div class="mhn3-warning">⚖️ ${ar?'قاعدة النظام: استبدال الوجبة لا يعني استبدال الهدف. عند اختيار بديل، المحرك يعيد حساب الغرامات للمكونات الجديدة للوصول إلى نفس هدف الوجبة من السعرات والبروتين والكربوهيدرات والدهون قدر الإمكان. إذا كان تركيب البديل غير قادر رياضيًا على مطابقة الهدف بالكامل، سيبقى أقرب حل ممكن بدل تغيير الهدف الأصلي.':'System rule: replacing a meal does not replace its target. The engine refits the new foods toward the same kcal, protein, carb and fat target. If a food combination cannot mathematically hit every target, it keeps the closest feasible solution rather than silently changing the original target.'}</div></section>${mhWeekSection(p,ar)}`;
 }
@@ -19206,6 +19213,7 @@ async function activate(){
  type=TYPES[r.type];months=type.months||0;
  }else {months=r.months||0;hours=r.hours||0;}
  const trial=!!(type&&type.trial);
+ if(trial&&valid(G.lic)&&!isTrialLic(G.lic)){setMsg(B('This device already has an active subscription. A trial code cannot be used on it — send a 1, 3, 6 or 12-month code to extend it.','عندك اشتراك فعّال على هالجهاز. كود التجربة ما بينفع هون — لتمديد الاشتراك استعمل كود شهر أو 3 أو 6 أو 12 شهر.'));return}
  if(trial&&G.trial){setMsg(B('The free trial was already used on this device.','التجربة المجانية استُخدمت سابقًا على هذا الجهاز.'));return}
  const now=Date.now();let start=now;
  if(!trial&&valid(G.lic)&&!isTrialLic(G.lic))start=G.lic.end; /* renewal before expiry adds time instead of losing it */
@@ -19226,7 +19234,7 @@ async function linkActivate(){
  const before=G.lic;let inp=$('mhLicCode');if(!inp){const m=$('mhLicCodeMount');if(m){inp=document.createElement('div');inp.id='mhLicCode';inp.className='mh-lic-code-editor';inp.contentEditable='true';m.replaceChildren(inp)}}
  if(!inp)return;inp.textContent=code;await activate();
  if(G.lic!==before&&valid(G.lic))return; /* activated — activate() already hid the gate and showed the licence toast */
- if(valid(G.lic)){hideGate();return} /* the device already has an active licence: a failed link (e.g. an old link reopened from a home-screen icon) must never block the app */
+ if(valid(G.lic)){hideGate();try{const m=$('mhLicMsg');const t=m&&m.textContent;if(t)setTimeout(()=>alert(t),400)}catch(_){}return} /* the device already has an active licence: a failed link (e.g. an old link reopened from a home-screen icon) must never block the app */
  const g=$('mhLicenseGate');if(g){g.classList.add('show');const c=$('mhLicClose');if(c)c.hidden=true;const w=$('mhLicCodeWrap');if(w)w.classList.add('open')}
 }
 /* ------------------------------ safe reset / coach test ------------------------------ */
@@ -26997,6 +27005,197 @@ try{new MutationObserver(function(){setTimeout(apply,0)}).observe(document.docum
 function boot(){apply();setTimeout(apply,700);setTimeout(apply,2000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 window.MH_NOIR_THEME={apply:apply,rebuild:function(){built=0;apply()}};
+})();
+</script>
+<style id="mhFormCamCss" data-no-rose data-no-noir>
+.ex-quick.formcam{border-color:#e8b54a66;color:#f3c969}
+.ex-quick.formcam.has::after{content:"";position:absolute;top:4px;inset-inline-end:4px;width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px #0b0b0c}
+html.mh-rose-theme .ex-quick.formcam{border-color:#db277766;color:#be185d;background:#fff}
+html.mh-rose-theme .ex-quick.formcam.has::after{box-shadow:0 0 0 2px #fff}
+.mhfc-ov{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.72);display:flex;align-items:flex-end;justify-content:center;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.mhfc-sh{--a:#e8b54a;--a2:#f6d98c;--bg:#111112;--card:#1b1b1d;--fg:#f2f2f2;--mu:#a3a3a3;--ln:#2c2c2f;width:100%;max-width:520px;max-height:96vh;overflow:auto;background:var(--bg);color:var(--fg);border-radius:22px 22px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.5);animation:mhfcUp .22s ease}
+html.mh-rose-theme .mhfc-sh{--a:#db2777;--a2:#be185d;--bg:#fff8fb;--card:#fff;--fg:#2c1622;--mu:#86677a;--ln:#f1d5e2}
+@keyframes mhfcUp{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.mhfc-sh{animation:none}}
+.mhfc-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mhfc-hd div{flex:1;min-width:0}
+.mhfc-hd small{display:block;font-size:11px;letter-spacing:.08em;color:var(--a);font-weight:800}
+.mhfc-hd b{display:block;font-size:17px;line-height:1.3;overflow-wrap:anywhere}
+html body .mhfc-ov .mhfc-x{flex:0 0 40px;width:40px;height:40px;padding:0;border-radius:12px!important;border:1px solid var(--ln)!important;background:var(--card)!important;color:var(--fg)!important;box-shadow:none!important;font-size:18px;cursor:pointer}
+.mhfc-st{position:relative;width:100%;aspect-ratio:3/4;max-height:62vh;border-radius:18px;overflow:hidden;background:#000;display:grid;place-items:center}
+.mhfc-st video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.mhfc-st video.mir{transform:scaleX(-1)}
+.mhfc-cd[hidden]{display:none!important}
+.mhfc-cd{position:absolute;inset:0;display:grid;place-items:center;font-size:96px;font-weight:900;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.6);pointer-events:none}
+.mhfc-bar{position:absolute;left:12px;right:12px;top:12px;height:6px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden}
+.mhfc-bar i{display:block;height:100%;width:0;background:#ef4444;border-radius:9px}
+.mhfc-rec{position:absolute;top:24px;inset-inline-start:14px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;font-weight:800;padding:4px 10px;border-radius:999px;display:flex;gap:6px;align-items:center}
+.mhfc-rec::before{content:"";width:9px;height:9px;border-radius:50%;background:#ef4444}
+html body .mhfc-ov .mhfc-flip{position:absolute;bottom:12px;inset-inline-end:12px;width:46px;height:46px;padding:0;border-radius:50%!important;border:0!important;background:rgba(0,0,0,.55)!important;color:#fff!important;font-size:20px;cursor:pointer}
+.mhfc-msg{color:#ddd;text-align:center;padding:24px;font-size:14px;line-height:1.7}
+.mhfc-tip{font-size:12.5px;color:var(--mu);margin:10px 2px 0;line-height:1.6;text-align:center}
+.mhfc-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+html body .mhfc-ov .mhfc-b{flex:1 1 30%;min-height:48px;border-radius:14px!important;border:1px solid var(--ln)!important;background:var(--card)!important;color:var(--fg)!important;box-shadow:none!important;font:inherit;font-size:14px;font-weight:800;cursor:pointer;padding:0 10px}
+html body .mhfc-ov .mhfc-b.p{background:linear-gradient(135deg,var(--a2),var(--a))!important;border-color:transparent!important;color:#111!important}
+html.mh-rose-theme body .mhfc-ov .mhfc-b.p{color:#fff!important}
+html body .mhfc-ov .mhfc-b.wa{background:#16a34a!important;border-color:#16a34a!important;color:#fff!important}
+html body .mhfc-ov .mhfc-b.d{color:#ef4444!important}
+html body .mhfc-ov .mhfc-b:disabled{opacity:.45}
+html body .mhfc-ov .mhfc-go{display:block;margin:14px auto 0;width:84px;height:84px;padding:0;border-radius:50%!important;border:5px solid #fff!important;background:#ef4444!important;box-shadow:0 0 0 3px #ef444455;cursor:pointer;font-size:0}
+html.mh-rose-theme body .mhfc-ov .mhfc-go{border-color:#fbe7f0!important}
+.mhfc-b:focus-visible,.mhfc-x:focus-visible,.mhfc-go:focus-visible,.mhfc-flip:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.mhfc-dt{font-size:12px;color:var(--mu);text-align:center;margin-top:8px}
+</style>
+<script>
+/* MH FORM CAM — client records a 7-second clip of themselves for any exercise; saved on this phone (IndexedDB) next to that exercise. */
+(function(){
+'use strict';
+var SECS=7,DB='mh-formcam-v1',ST='clips',COACH='96176939848';
+var has=new Set(),dbp=null;
+function ar(){try{if(typeof S!=='undefined'&&S&&S.language)return S.language==='ar'}catch(e){}return document.documentElement.dir==='rtl'}
+function T(a,e){return ar()?a:e}
+function key(n){return String(n||'').toLowerCase().replace(/[^a-z0-9\u0600-\u06ff]+/g,' ').trim()}
+function exName(id){try{var f=function(x){return String(x.id)===String(id)};var e=(typeof E!=='undefined'&&E.find&&E.find(f))||(typeof AUX!=='undefined'&&AUX.find&&AUX.find(f))||(typeof findExerciseForTimer==='function'?findExerciseForTimer(id):null);return e&&e.name?e.name:String(id)}catch(_){return String(id)}}
+function exLabel(n){try{return ar()?(window.MH_TRANSLATE_EXERCISE_AR?MH_TRANSLATE_EXERCISE_AR(n):((typeof AR!=='undefined'&&AR&&AR[n])||n)):n}catch(_){return n}}
+function db(){if(dbp)return dbp;dbp=new Promise(function(res,rej){try{var r=indexedDB.open(DB,1);r.onupgradeneeded=function(){r.result.createObjectStore(ST)};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}}catch(e){rej(e)}});return dbp}
+function tx(mode,fn){return db().then(function(d){return new Promise(function(res,rej){var t=d.transaction(ST,mode),s=t.objectStore(ST),out=fn(s);t.oncomplete=function(){res(out&&out.result!==undefined?out.result:out)};t.onerror=function(){rej(t.error)};t.onabort=function(){rej(t.error)}})})}
+function get(k){return db().then(function(d){return new Promise(function(res,rej){var r=d.transaction(ST,'readonly').objectStore(ST).get(k);r.onsuccess=function(){res(r.result||null)};r.onerror=function(){rej(r.error)}})})}
+function put(k,v){return tx('readwrite',function(s){return s.put(v,k)})}
+function del(k){return tx('readwrite',function(s){return s.delete(k)})}
+function loadKeys(){db().then(function(d){var r=d.transaction(ST,'readonly').objectStore(ST).getAllKeys();r.onsuccess=function(){has=new Set(r.result||[]);mark()}}).catch(function(){})}
+function decorate(){document.querySelectorAll('.ex-quick.timer').forEach(function(t){var box=t.parentElement;if(!box||box.querySelector('.ex-quick.formcam'))return;var m=String(t.getAttribute('onclick')||'').match(/openTimer\('((?:[^'\\]|\\.)*)'\)/);if(!m)return;var id=m[1].replace(/\\'/g,"'");if(/^physio_/.test(id))return;var w=document.createElement('span');w.innerHTML=btn(id);var b=w.firstChild;var after=box.querySelector('.ex-quick.offline')||box.lastElementChild;if(after&&after.parentElement===box)after.insertAdjacentElement('afterend',b);else box.appendChild(b)})}
+function mark(){decorate();document.querySelectorAll('.ex-quick.formcam[data-mhfc]').forEach(function(b){var k=key(exName(b.getAttribute('data-mhfc')));b.classList.toggle('has',has.has(k))})}
+var CAM='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path><circle cx="12" cy="13" r="3.6"></circle></svg>';
+function btn(eId){var id=String(eId).replace(/'/g,"\\'").replace(/"/g,'&quot;');var lab=T('صوّر حالك','Record Yourself');return '<button type="button" class="ex-quick formcam" data-mhfc="'+id+'" onclick="MH_FORMCAM.open(this.getAttribute(\'data-mhfc\'))" aria-label="'+lab+'" title="'+lab+'">'+CAM+'<span class="quick-label">'+lab+'</span></button>'}
+/* ---------- sheet ---------- */
+var ov=null,stream=null,rec=null,chunks=[],timer=null,cur=null,facing='environment',lastUrl=null;
+function stopStream(){try{if(stream)stream.getTracks().forEach(function(t){t.stop()})}catch(_){}stream=null}
+function revoke(){if(lastUrl){try{URL.revokeObjectURL(lastUrl)}catch(_){}lastUrl=null}}
+function close(){clearInterval(timer);timer=null;try{if(rec&&rec.state!=='inactive')rec.stop()}catch(_){}rec=null;stopStream();revoke();if(ov){ov.remove();ov=null}document.removeEventListener('keydown',esc)}
+function esc(e){if(e.key==='Escape')close()}
+function shell(inner){if(!ov){ov=document.createElement('div');ov.className='mhfc-ov';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.addEventListener('click',function(e){if(e.target===ov)close()});document.body.appendChild(ov);document.addEventListener('keydown',esc)}
+ ov.setAttribute('dir',ar()?'rtl':'ltr');ov.innerHTML='<div class="mhfc-sh"><div class="mhfc-hd"><div><small>🎥 '+T('صوّر حالك — '+SECS+' ثواني','RECORD YOURSELF — '+SECS+' SEC')+'</small><b>'+esc2(exLabel(cur.name))+'</b></div><button type="button" class="mhfc-x" data-a="x" aria-label="'+T('إغلاق','Close')+'">✕</button></div>'+inner+'</div>';
+ ov.querySelector('[data-a="x"]').onclick=close}
+function esc2(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fmtDate(ts){try{return new Date(ts).toLocaleString(ar()?'ar':'en',{dateStyle:'medium',timeStyle:'short'})}catch(_){return ''}}
+function open(eId){cur={id:eId,name:exName(eId)};cur.k=key(cur.name);get(cur.k).then(function(v){v?showSaved(v):showRecorder()}).catch(function(){showRecorder()})}
+function showSaved(v){stopStream();revoke();lastUrl=URL.createObjectURL(v.blob);
+ shell('<div class="mhfc-st"><video src="'+lastUrl+'" playsinline autoplay muted loop controls></video></div><div class="mhfc-dt">'+T('آخر تصوير: ','Recorded: ')+fmtDate(v.ts)+'</div>'+
+ '<div class="mhfc-row"><button type="button" class="mhfc-b wa" data-a="send">💬 '+T('ابعت للمدرّب','Send to coach')+'</button></div>'+
+ '<div class="mhfc-row"><button type="button" class="mhfc-b p" data-a="re">🎥 '+T('صوّر من جديد','Record again')+'</button><button type="button" class="mhfc-b d" data-a="del">🗑 '+T('امحِ','Delete')+'</button></div>');
+ ov.querySelector('[data-a="re"]').onclick=showRecorder;
+ ov.querySelector('[data-a="del"]').onclick=function(){if(!confirm(T('أكيد بدك تمحي الفيديو؟','Delete this video?')))return;del(cur.k).then(function(){has.delete(cur.k);mark();close()})};
+ ov.querySelector('[data-a="send"]').onclick=function(){send(v)}}
+function canLive(){return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)}
+function pickMime(){var l=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];for(var i=0;i<l.length;i++){try{if(MediaRecorder.isTypeSupported(l[i]))return l[i]}catch(_){}}return ''}
+function showRecorder(){revoke();
+ var tip='<div class="mhfc-tip">'+T('حط التلفون على شي ثابت، ابعد لتبيّن كلّك بالصورة، واكبس الزر الأحمر. في عدّ 3، بعدين بيصوّر '+SECS+' ثواني لحالو.','Prop the phone up, step back so your whole body is in frame, then tap the red button. 3-second countdown, then it records '+SECS+' seconds automatically.')+'</div>';
+ if(!canLive()){fileMode(tip);return}
+ shell('<div class="mhfc-st"><video class="'+(facing==='user'?'mir':'')+'" playsinline autoplay muted></video><div class="mhfc-cd" hidden></div><button type="button" class="mhfc-flip" data-a="flip" aria-label="'+T('بدّل الكاميرا','Switch camera')+'">⟲</button></div><button type="button" class="mhfc-go" data-a="go" aria-label="'+T('ابدأ التصوير','Start recording')+'">REC</button>'+tip);
+ ov.querySelector('[data-a="flip"]').onclick=function(){facing=facing==='user'?'environment':'user';showRecorder()};
+ ov.querySelector('[data-a="go"]').onclick=countdown;
+ startCam()}
+function startCam(){stopStream();var vid=ov&&ov.querySelector('.mhfc-st video');
+ navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:720},height:{ideal:1280},frameRate:{ideal:30}},audio:false}).then(function(s){if(!ov){s.getTracks().forEach(function(t){t.stop()});return}stream=s;vid.srcObject=s;var p=vid.play();if(p&&p.catch)p.catch(function(){})}).catch(function(err){
+  var denied=err&&(err.name==='NotAllowedError'||err.name==='SecurityError');
+  var st=ov&&ov.querySelector('.mhfc-st');if(st)st.innerHTML='<div class="mhfc-msg">'+(denied?T('ما في إذن للكاميرا. اسمح للتطبيق يستعمل الكاميرا من إعدادات المتصفح، أو صوّر من كاميرا التلفون تحت.','Camera permission was denied. Allow camera access in your browser settings, or use the phone camera below.'):T('الكاميرا مش متاحة هون. فيك تصوّر من كاميرا التلفون تحت.','The camera is not available here. You can use the phone camera below.'))+'</div>';
+  var go=ov&&ov.querySelector('[data-a="go"]');if(go)go.remove();var fl=ov&&ov.querySelector('[data-a="flip"]');if(fl)fl.remove();
+  if(ov){var r=document.createElement('div');r.className='mhfc-row';r.innerHTML='<button type="button" class="mhfc-b p" data-a="file">📱 '+T('افتح كاميرا التلفون','Open phone camera')+'</button>';ov.querySelector('.mhfc-sh').appendChild(r);r.querySelector('button').onclick=pickFile}})}
+function countdown(){if(!stream)return;var go=ov.querySelector('[data-a="go"]'),fl=ov.querySelector('[data-a="flip"]'),cd=ov.querySelector('.mhfc-cd');go.disabled=true;go.style.visibility='hidden';if(fl)fl.remove();cd.hidden=false;var n=3;cd.textContent=n;
+ timer=setInterval(function(){n--;if(n>0){cd.textContent=n}else{clearInterval(timer);timer=null;cd.hidden=true;record()}},1000)}
+function record(){if(!ov||!stream)return;var st=ov.querySelector('.mhfc-st');st.insertAdjacentHTML('beforeend','<div class="mhfc-bar"><i></i></div><div class="mhfc-rec">0s</div>');
+ var bar=st.querySelector('.mhfc-bar i'),lab=st.querySelector('.mhfc-rec'),mime=pickMime(),opt={videoBitsPerSecond:1500000};if(mime)opt.mimeType=mime;
+ chunks=[];try{rec=new MediaRecorder(stream,opt)}catch(e){try{rec=new MediaRecorder(stream)}catch(e2){fileMode('');return}}
+ rec.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+ rec.onstop=function(){var type=(rec&&rec.mimeType)||mime||'video/webm';var blob=new Blob(chunks,{type:type.split(';')[0]});stopStream();rec=null;if(!ov)return;if(!blob.size){showRecorder();return}preview(blob)};
+ var t0=Date.now();rec.start(250);
+ timer=setInterval(function(){var el=(Date.now()-t0)/1000;bar.style.width=Math.min(100,el/SECS*100)+'%';lab.textContent=Math.min(SECS,Math.floor(el))+'s';if(el>=SECS){clearInterval(timer);timer=null;try{rec.stop()}catch(_){}}},100)}
+function preview(blob){revoke();lastUrl=URL.createObjectURL(blob);
+ shell('<div class="mhfc-st"><video src="'+lastUrl+'" playsinline autoplay muted loop controls></video></div>'+
+ '<div class="mhfc-row"><button type="button" class="mhfc-b p" data-a="save">✓ '+T('احفظ','Save')+'</button><button type="button" class="mhfc-b" data-a="re">↺ '+T('عيد','Retake')+'</button></div>');
+ ov.querySelector('[data-a="re"]').onclick=showRecorder;
+ ov.querySelector('[data-a="save"]').onclick=function(){var b=this;b.disabled=true;var v={blob:blob,type:blob.type,ts:Date.now(),name:cur.name};put(cur.k,v).then(function(){has.add(cur.k);mark();showSaved(v)}).catch(function(){b.disabled=false;alert(T('ما قدرنا نحفظ الفيديو. يمكن ذاكرة التلفون مليانة.','Could not save the video. Your phone storage may be full.'))})}}
+/* Fallback: native camera via file input (in-app browsers / older phones) */
+function fileMode(tip){shell('<div class="mhfc-st"><div class="mhfc-msg">📱 '+T('رح تنفتح كاميرا التلفون. صوّر حالك تقريباً '+SECS+' ثواني وارجع.','Your phone camera will open. Record about '+SECS+' seconds and come back.')+'</div></div><div class="mhfc-row"><button type="button" class="mhfc-b p" data-a="file">🎥 '+T('افتح الكاميرا','Open camera')+'</button></div>'+(tip||''));ov.querySelector('[data-a="file"]').onclick=pickFile}
+function pickFile(){var i=document.createElement('input');i.type='file';i.accept='video/*';i.setAttribute('capture','environment');i.style.display='none';document.body.appendChild(i);
+ i.onchange=function(){var f=i.files&&i.files[0];i.remove();if(!f)return;if(f.size>40*1024*1024){alert(T('الفيديو كتير طويل. صوّر شي '+SECS+' ثواني بس.','That video is too long. Record about '+SECS+' seconds.'));return}
+  var u=URL.createObjectURL(f),v=document.createElement('video');v.preload='metadata';v.muted=true;v.onloadedmetadata=function(){var d=v.duration;URL.revokeObjectURL(u);if(isFinite(d)&&d>SECS+8){alert(T('الفيديو أطول من اللازم ('+Math.round(d)+' ثانية). صوّر شي '+SECS+' ثواني بس.','That video is '+Math.round(d)+' seconds. Please keep it to about '+SECS+' seconds.'));return}preview(f)};v.onerror=function(){URL.revokeObjectURL(u);preview(f)};v.src=u};
+ i.click()}
+/* Send to coach: share sheet with the file (WhatsApp appears there); fallback = download + WhatsApp chat */
+function send(v){var ext=/mp4|quicktime/.test(v.type||'')?'mp4':'webm';var cl='';try{cl=(document.getElementById('name')||{}).value||((typeof S!=='undefined'&&S.client&&S.client.name)||'')}catch(_){}
+ var fname=('MH-'+(cur.name||'exercise')+'.'+ext).replace(/[^\w.\-]+/g,'-');var file;try{file=new File([v.blob],fname,{type:v.type||('video/'+ext)})}catch(_){file=null}
+ var txt=T('🎥 فيديو حركة: ','🎥 Exercise video: ')+exLabel(cur.name)+(cl?'\n'+T('الاسم: ','Client: ')+cl:'')+'\n'+T('شو رأيك بالتكنيك؟','How is my form?');
+ if(file&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],text:txt}).catch(function(e){if(e&&e.name!=='AbortError')fallback()});return}
+ fallback();
+ function fallback(){try{var u=URL.createObjectURL(v.blob),a=document.createElement('a');a.href=u;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}catch(_){}
+  alert(T('نزل الفيديو عتلفونك. هلق رح تنفتح محادثة المدرّب عالواتساب: اكبس 📎 وابعت الفيديو.','The video was saved to your phone. WhatsApp will now open the coach chat: tap 📎 and attach the video.'));
+  var w=document.createElement('a');w.href='https://wa.me/'+COACH+'?text='+encodeURIComponent(txt);w.target='_blank';w.rel='noopener noreferrer';document.body.appendChild(w);w.click();w.remove()}}
+window.MH_FORMCAM={btn:btn,open:open,close:close,SECS:SECS};
+try{new MutationObserver(function(m){for(var i=0;i<m.length;i++){if(m[i].addedNodes&&m[i].addedNodes.length){clearTimeout(window.__mhfcT);window.__mhfcT=setTimeout(mark,120);break}}}).observe(document.documentElement,{childList:true,subtree:true})}catch(_){}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadKeys);else loadKeys();
+})();
+</script>
+<style id="mhUpdCss" data-no-rose data-no-noir>
+#mhUpd2{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:2147483647;display:flex;align-items:center;gap:10px;padding:12px 12px 12px 16px;border-radius:18px;background:linear-gradient(135deg,#f6d98c,#d9a441);color:#1c1405;box-shadow:0 12px 34px rgba(0,0,0,.45);font-weight:800;font-size:14px;line-height:1.4;animation:mhUpdIn .3s ease}
+html.mh-rose-theme #mhUpd2{background:linear-gradient(135deg,#f472b6,#db2777);color:#fff}
+#mhUpd2 span{flex:1;min-width:0}
+html body #mhUpd2 button{flex:0 0 auto;min-height:42px;padding:0 16px;border-radius:12px!important;border:0!important;background:#111!important;color:#fff!important;font:inherit;font-weight:900;cursor:pointer;box-shadow:none!important}
+html.mh-rose-theme body #mhUpd2 button{background:#fff!important;color:#be185d!important}
+html body #mhUpd2 button.x{background:transparent!important;color:inherit!important;min-width:36px;padding:0;font-size:18px}
+@keyframes mhUpdIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.mhwn-ov{position:fixed;inset:0;z-index:2147482995;background:rgba(0,0,0,.66);display:flex;align-items:center;justify-content:center;padding:16px}
+.mhwn{--a:#e8b54a;--bg:#121213;--fg:#f2f2f2;--mu:#a3a3a3;--ln:#2c2c2f;width:100%;max-width:440px;max-height:90vh;overflow:auto;background:var(--bg);color:var(--fg);border:1px solid var(--ln);border-radius:24px;padding:22px 20px 18px;box-shadow:0 20px 60px rgba(0,0,0,.55);animation:mhUpdIn .3s ease}
+html.mh-rose-theme .mhwn{--a:#db2777;--bg:#fff8fb;--fg:#2c1622;--mu:#86677a;--ln:#f1d5e2}
+.mhwn small{display:block;color:var(--a);font-weight:900;font-size:12px;letter-spacing:.08em}
+.mhwn h3{margin:4px 0 14px;font-size:21px;line-height:1.3}
+.mhwn ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.mhwn li{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--ln);border-radius:16px;font-size:14.5px;line-height:1.55}
+.mhwn li i{font-style:normal;font-size:22px;line-height:1.2;flex:0 0 auto}
+.mhwn li b{display:block;font-size:15px}
+.mhwn li em{display:block;font-style:normal;color:var(--mu);font-size:13px}
+html body .mhwn-ov .mhwn-ok{display:block;width:100%;margin-top:16px;min-height:50px;border-radius:15px!important;border:0!important;background:linear-gradient(135deg,#f6d98c,var(--a))!important;color:#111!important;font:inherit;font-weight:900;font-size:16px;cursor:pointer;box-shadow:none!important}
+html.mh-rose-theme body .mhwn-ov .mhwn-ok{background:linear-gradient(135deg,#f472b6,#db2777)!important;color:#fff!important}
+@media (prefers-reduced-motion:reduce){#mhUpd2,.mhwn{animation:none}}
+</style>
+<script>
+/* MH UPDATE — instant open from the saved copy (service worker), quiet background check,
+   "new update" bar, and a one-time "What's new" card per build. */
+(function(){
+'use strict';
+var BUILD='2026-10-03a';
+var NOTES=[
+ ['🎥','صوّر حالك بكل حركة','Record yourself on any exercise','كبسة 📷 جنب كل حركة: صوّر 7 ثواني، شوف شكلك، وابعت الفيديو لمدرّبك عالواتساب.','Tap 📷 next to any exercise: record 7 seconds, check your form and send it to your coach on WhatsApp.'],
+ ['🥗','أهداف تغذية جديدة','New nutrition goals','تثبيت الوزن، لين بالك (زيادة عضلية نظيفة)، وتضخيم بزيادة سعرات أوضح.','Maintenance, Lean Bulk, and a clearer Bulk with a proper calorie surplus.'],
+ ['⚡','أسرع، وبيشتغل بلا إنترنت','Faster, and works offline','التطبيق صار يفتح فوراً من تلفونك، وحتى بلا إنترنت. التحديثات بتوصلك لحالها.','The app now opens instantly from your phone, even with no internet. Updates arrive on their own.'],
+ ['🔒','حماية أقوى للاشتراك','Safer subscription','كود التجربة ما بيقدر يقصّر اشتراك مدفوع شغّال.','A trial code can no longer shorten an active paid subscription.']
+];
+var KEY='MH_SEEN_BUILD';
+function ar(){try{if(typeof S!=='undefined'&&S&&S.language)return S.language==='ar'}catch(e){}return document.documentElement.lang==='ar'||document.documentElement.dir==='rtl'}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+/* ---------- background update check ---------- */
+var last=0;
+function check(){if(!('serviceWorker' in navigator))return;var now=Date.now();if(now-last<5*60*1000)return;last=now;
+ navigator.serviceWorker.ready.then(function(r){var w=navigator.serviceWorker.controller||r.active;if(w)w.postMessage({type:'MH_CHECK_UPDATE',url:location.href})}).catch(function(){})}
+function bar(){if(document.getElementById('mhUpd2'))return;if(blocked()){clearTimeout(bar._t);bar._t=setTimeout(bar,1000);return}var a=ar(),b=document.createElement('div');b.id='mhUpd2';b.setAttribute('role','status');b.setAttribute('dir',a?'rtl':'ltr');
+ b.innerHTML='<span>✨ '+(a?'في تحديث جديد للتطبيق':'A new version is ready')+'</span><button type="button" data-u="go">'+(a?'حدّث':'Update')+'</button><button type="button" class="x" data-u="x" aria-label="'+(a?'لاحقاً':'Later')+'">✕</button>';
+ b.addEventListener('click',function(e){var t=e.target.closest('button');if(!t)return;if(t.getAttribute('data-u')==='go'){location.reload()}else b.remove()});
+ document.body.appendChild(b)}
+try{if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='MH_PAGE_UPDATED')bar()});
+ window.addEventListener('load',function(){setTimeout(check,4000)});
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check()})}}catch(e){}
+/* ---------- What's new (once per build) ---------- */
+function blocked(){var w=document.getElementById('mhWelcomeEnter');if(w&&w.offsetParent)return true;var g=document.getElementById('mhLicenseGate');if(g&&g.classList.contains('show'))return true;
+ var sp=document.querySelector('#mhWelcomeSplash,.mh-welcome-splash,.mhws');if(sp&&sp.offsetParent&&getComputedStyle(sp).display!=='none'&&getComputedStyle(sp).visibility!=='hidden')return true;return false}
+function show(){var a=ar(),o=document.createElement('div');o.className='mhwn-ov';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('dir',a?'rtl':'ltr');
+ o.innerHTML='<div class="mhwn"><small>MH ELITE PRO</small><h3>🆕 '+(a?'شو الجديد بهالنسخة':"What's new in this version")+'</h3><ul>'+NOTES.map(function(n){return '<li><i>'+n[0]+'</i><div><b>'+(a?n[1]:n[2])+'</b><em>'+(a?n[3]:n[4])+'</em></div></li>'}).join('')+'</ul><button type="button" class="mhwn-ok">'+(a?'يلا نبلّش 💪':"Let's go 💪")+'</button></div>';
+ function done(){ls(KEY,BUILD);o.remove()}
+ o.querySelector('.mhwn-ok').onclick=done;o.addEventListener('click',function(e){if(e.target===o)done()});document.body.appendChild(o);o.querySelector('.mhwn-ok').focus({preventScroll:true})}
+function maybe(){var seen=ls(KEY);if(seen===BUILD)return;
+ var v=0;try{v=(JSON.parse(ls('MH_VISIT_LOG_V1')||'[]')||[]).length}catch(e){}var returning=!!seen||v>=2;
+ if(!returning){ls(KEY,BUILD);return}         /* brand-new client: nothing is "new" to them */
+ var n=0,t=setInterval(function(){n++;if(n>120){clearInterval(t);return}if(blocked())return;clearInterval(t);setTimeout(function(){if(!blocked())show();else maybe()},900)},800)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(maybe,1500)});else setTimeout(maybe,1500);
+window.MH_UPDATE={build:BUILD,check:function(){last=0;check()},whatsNew:show};
 })();
 </script>
 </body>
