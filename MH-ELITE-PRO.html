@@ -5481,6 +5481,26 @@ const E=DB.map(x=>({id:x[0],name:x[1],muscle:x[2],equipment:x[3],difficulty:x[4]
  {id:'mhw030',name:'Supported One-Arm Dumbbell Row',ar:'سحب دمبل بذراع واحدة مع دعم',muscle:'back',equipment:['home','dumbbell','full'],difficulty:1,joints:['shoulder','lowback'],cues:['Support the free hand securely','Keep spine neutral','Pull the elbow toward the hip']},
  {id:'mhw031',name:'Suitcase March',ar:'مارش بحمل الحقيبة',muscle:'core',equipment:['home','dumbbell','full'],difficulty:2,joints:['hip','lowback'],cues:['Hold one weight beside the body','March without leaning','Breathe normally and keep ribs stacked']},
  {id:'mhw032',name:'Standing Pallof Press',ar:'بالوف برس واقفًا',muscle:'core',equipment:['home','bodyweight','full'],difficulty:2,joints:['shoulder','lowback'],cues:['Anchor the band at chest height','Press forward without rotating','Exhale and keep the pelvis still']}
+ ,{id:'mhx01',name:'Elliptical Intervals',ar:'إليبتيكال — فترات',muscle:'cardio',equipment:['full'],difficulty:1,joints:['knee','hip'],cues:['Stand tall and hold the handles lightly','Push and pull evenly with arms and legs','Alternate a harder minute with an easy minute']}
+ ,{id:'mhx02',name:'Assault Bike Sprints',ar:'سبرنت على الأسولت بايك (Air Bike)',muscle:'cardio',equipment:['full'],difficulty:3,joints:['knee','shoulder'],cues:['Drive with legs and arms together','Sprint hard for 10–20 seconds','Recover fully with easy pedalling']}
+ ,{id:'mhx03',name:'Ski Erg Intervals',ar:'سكي إرغ — فترات',muscle:'cardio',equipment:['full'],difficulty:2,joints:['shoulder','lowback'],cues:['Hinge at the hips as the arms pull down','Brace the trunk on every stroke','Return tall and controlled']}
+ ,{id:'mhx04',name:'Stair Climber Machine',ar:'جهاز صعود الدرج',muscle:'cardio',equipment:['full'],difficulty:2,joints:['knee','hip','ankle'],cues:['Stand tall without leaning on the rails','Press through the whole foot','Keep a steady rhythm you can breathe through']}
+ ,{id:'mhx05',name:'Stationary Bike Zone 2 Ride',ar:'عجلة ثابتة — منطقة 2 (هوائي مريح)',muscle:'cardio',equipment:['full'],difficulty:1,joints:['knee'],cues:['Set the saddle at hip height','Keep a pace where you can still talk','Smooth, even pedal strokes']}
+ ,{id:'mhx06',name:'Incline Treadmill Walk',ar:'مشي مائل على التريدميل',muscle:'cardio',equipment:['full'],difficulty:1,joints:['knee','ankle'],cues:['Set a 8–12% incline at a brisk walk','Let go of the rails','Stand tall and swing the arms']}
+ ,{id:'mhx07',name:'Tuck Front Lever Hold',ar:'ثبات فرونت ليفر مضموم',muscle:'back',equipment:['full','bodyweight'],difficulty:3,joints:['shoulder','elbow'],cues:['Hang with straight arms','Pull the bar toward the hips with straight arms','Keep knees tucked and back flat']}
+ ,{id:'mhx08',name:'Advanced Tuck Front Lever Hold',ar:'ثبات فرونت ليفر مضموم متقدّم',muscle:'back',equipment:['full','bodyweight'],difficulty:4,joints:['shoulder','elbow','lowback'],cues:['Flatten the back until it is level','Keep arms locked straight','Squeeze lats and glutes the whole hold']}
+ ,{id:'mhx09',name:'Front Lever Hold',ar:'ثبات فرونت ليفر كامل',muscle:'back',equipment:['full','bodyweight'],difficulty:4,joints:['shoulder','elbow','lowback'],cues:['Body straight and horizontal from head to heels','Press the bar down toward the hips','Hold only with clean form']}
+ ,{id:'mhx10',name:'Tuck Back Lever Hold',ar:'ثبات باك ليفر مضموم',muscle:'back',equipment:['full','bodyweight'],difficulty:4,joints:['shoulder','elbow'],cues:['Enter slowly through skin-the-cat','Keep arms straight and chest open','Stop at any sharp shoulder pain']}
+ ,{id:'mhx11',name:'Planche Lean Hold',ar:'ثبات ميلان البلانش',muscle:'shoulders',equipment:['home','bodyweight','full'],difficulty:3,joints:['wrist','shoulder'],cues:['Hands turned slightly out, arms locked','Lean the shoulders past the hands','Protract the shoulder blades and brace']}
+ ,{id:'mhx12',name:'Tuck Planche Hold',ar:'ثبات بلانش مضموم',muscle:'shoulders',equipment:['home','bodyweight','full'],difficulty:4,joints:['wrist','shoulder','elbow'],cues:['Lean forward until the feet lift','Round the upper back and keep arms straight','Hold short, clean sets']}
+ ,{id:'mhx13',name:'Human Flag Hold',ar:'ثبات العلم البشري (هيومن فلاغ)',muscle:'core',equipment:['full','bodyweight'],difficulty:4,joints:['shoulder','wrist','lowback'],cues:['Top arm pulls, bottom arm pushes','Stack hips and keep the body rigid','Start with tucked legs']}
+ ,{id:'mhx14',name:'Wall Walk',ar:'المشي على الحائط (وول ووك)',muscle:'shoulders',equipment:['home','bodyweight','full'],difficulty:3,joints:['wrist','shoulder','lowback'],cues:['Walk the feet up while walking the hands in','Keep ribs down and glutes tight','Walk back down slowly']}
+ ,{id:'mhx15',name:'Skin the Cat',ar:'سكين ذا كات',muscle:'back',equipment:['full','bodyweight'],difficulty:3,joints:['shoulder','elbow'],cues:['Hang, then tuck the knees through the arms','Lower only as far as the shoulders allow','Return slowly the same way']}
+ ,{id:'mhx16',name:'Deficit Deadlift',ar:'ديدلفت من ارتفاع (ديفيسيت)',muscle:'back',equipment:['full'],difficulty:3,joints:['lowback','hip','knee'],cues:['Stand on a 2–5 cm plate','Keep the bar close and the spine neutral','Push the floor away to start the lift']}
+ ,{id:'mhx17',name:'Block Pull',ar:'ديدلفت من البلوكات (بلوك بول)',muscle:'back',equipment:['full'],difficulty:2,joints:['lowback','hip'],cues:['Bar on blocks just below the knee','Brace hard before the pull','Lock out hips and knees together']}
+ ,{id:'mhx18',name:'Larsen Press',ar:'لارسن برس (بنش بلا رجلين)',muscle:'chest',equipment:['full'],difficulty:3,joints:['shoulder','elbow'],cues:['Legs straight and off the floor drive','Keep the upper back tight on the bench','Lower under control to the chest']}
+ ,{id:'mhx19',name:'Devil Press',ar:'ديفل برس',muscle:'shoulders',equipment:['dumbbell','full','home'],difficulty:3,joints:['shoulder','lowback','wrist'],cues:['Burpee down with hands on the dumbbells','Swing the weights from the floor to overhead in one move','Lock out, then lower with control']}
+ ,{id:'mhx20',name:'Man Maker',ar:'مان ميكر',muscle:'back',equipment:['dumbbell','full','home'],difficulty:3,joints:['shoulder','lowback','wrist'],cues:['Push-up, then row each side','Jump the feet in and clean the dumbbells','Squat and press overhead']}
 ].forEach(x=>{if(!E.some(e=>String(e.name).toLowerCase()===x.name.toLowerCase()))E.push(x)});
 try{window.E=E;}catch(e){}
 // Data-integrity fix: AUX_DB contains ~39 home movements tagged with main-lift muscle
@@ -6643,6 +6663,7 @@ function mh151OutputBodyDistribution(c){
  const dayKey=String(day?.name||'').toLowerCase();
  const explicitCoreDay=/\b(core|abs|abdominal)\b/.test(dayKey);
  const primaryKeys=(()=>{
+ if(/\b(push|pull|full|skills?|power|speed|upper|total|circuit|athletic)\b/.test(dayKey))return null;
  if(/chest/.test(dayKey)&&/triceps?/.test(dayKey))return new Set(['chest','triceps']);
  if(/back/.test(dayKey)&&/biceps?/.test(dayKey))return new Set(['back','biceps']);
  if(/shoulder/.test(dayKey)&&/(trap|trapezius)/.test(dayKey))return new Set(['shoulders','traps']);
@@ -19004,7 +19025,7 @@ setTimeout(v24Init,0);window.MH_V25_ADVANCED_SYSTEMS_AUTO_MANUAL=true;
 #mhLicenseGate .mh-lic-card label{letter-spacing:.9px}
 #mhLicenseGate .mh-lic-help{border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.03)}
 </style>
-<div id="mhLicenseGate" class="show" aria-modal="true" role="dialog"><div class="mh-lic-card"><div class="mh-lic-brand"><span class="mh-lic-brand-icon" aria-hidden="true">⚡</span>MH <span>ELITE</span></div><div class="mh-lic-sub" id="mhLicSub">Professional License Activation</div><button class="mh-lic-btn mh-lic-btn-primary mh-sub-renew-gate" id="mhSubRenewGate" type="button" hidden>VIEW SUBSCRIPTION PLANS</button><button type="button" class="mh-lic-code-toggle" id="mhLicCodeToggle" aria-expanded="false">Have an activation code?</button><div class="mh-lic-code-wrap" id="mhLicCodeWrap"><label id="mhLicCodeLabel">ACTIVATION CODE</label><div id="mhLicCodeMount" class="mh-lic-input-mount" aria-live="polite"></div><button class="mh-lic-btn" id="mhLicActivate">ACTIVATE</button></div><button class="mh-lic-btn mh-lic-close" id="mhLicClose" type="button" hidden>✕ Continue</button><button type="button" class="mh-lic-lang" id="mhLicLang">العربية / English</button><div class="mh-lic-msg" id="mhLicMsg"></div><div class="mh-lic-help" id="mhLicHelp">Offline local license. The activation period begins when the code is accepted on this device.</div></div></div><div id="mhLicenseToast" class="mh-license-toast"></div>
+<div id="mhLicenseGate" class="" aria-modal="true" role="dialog"><div class="mh-lic-card"><div class="mh-lic-brand"><span class="mh-lic-brand-icon" aria-hidden="true">⚡</span>MH <span>ELITE</span></div><div class="mh-lic-sub" id="mhLicSub">Professional License Activation</div><button class="mh-lic-btn mh-lic-btn-primary mh-sub-renew-gate" id="mhSubRenewGate" type="button" hidden>VIEW SUBSCRIPTION PLANS</button><button type="button" class="mh-lic-code-toggle" id="mhLicCodeToggle" aria-expanded="false">Have an activation code?</button><div class="mh-lic-code-wrap" id="mhLicCodeWrap"><label id="mhLicCodeLabel">ACTIVATION CODE</label><div id="mhLicCodeMount" class="mh-lic-input-mount" aria-live="polite"></div><button class="mh-lic-btn" id="mhLicActivate">ACTIVATE</button></div><button class="mh-lic-btn mh-lic-close" id="mhLicClose" type="button" hidden>✕ Continue</button><button type="button" class="mh-lic-lang" id="mhLicLang">العربية / English</button><div class="mh-lic-msg" id="mhLicMsg"></div><div class="mh-lic-help" id="mhLicHelp">Offline local license. The activation period begins when the code is accepted on this device.</div></div></div><div id="mhLicenseToast" class="mh-license-toast"></div><script>(function(){try{var x=JSON.parse(localStorage.getItem("MH_ELITE_LICENSE_V10")||"null");if(x&&x.end&&Date.now()>=x.end)document.getElementById("mhLicenseGate").classList.add("show")}catch(e){}})();</script>
 <script id="mh-v147-license-engine">
 /* ==========================================================================
  MH ELITE — LICENSE ENGINE v152 (non-form activation editor + signed/legacy codes, tamper-aware)
@@ -19294,7 +19315,7 @@ async function init(){
  if(open){const inp=$('mhLicCode');if(inp)setTimeout(()=>inp.focus(),220)}
  });
  const c=$('mhLicClose');if(c)c.onclick=()=>{hideGate()};
- G=merge([fromLS()]);evaluate(); /* immediate answer from localStorage … */
+ G=merge([fromLS()]);if(G.lic)evaluate(); /* immediate answer from localStorage — only when a licence is saved there (no flash on first open / restored storage) */
  await loadAll();evaluate(); /* … then repaired / confirmed from the other stores */
  if(valid(G.lic))toast(G.lic);
  try{await linkActivate()}catch(_){}
@@ -22421,7 +22442,8 @@ const MON={Jan:'يناير',Feb:'فبراير',Mar:'مارس',Apr:'أبريل',M
 const WD={Sun:'الأحد',Mon:'الإثنين',Tue:'الثلاثاء',Wed:'الأربعاء',Thu:'الخميس',Fri:'الجمعة',Sat:'السبت'};
 const MUS={chest:'الصدر',back:'الظهر',shoulders:'الأكتاف',biceps:'البايسبس',triceps:'الترايسبس',abs:'البطن',traps:'الترابيس',legs:'الأرجل',glutes:'الألوية',core:'الجذع',calves:'السمانة',forearms:'الساعدان',cardio:'الكارديو'};
 const DAYN={'Chest':'صدر','Triceps':'ترايسبس','Back':'ظهر','Biceps':'بايسبس','Shoulders':'أكتاف','Traps':'ترابيس','Legs':'أرجل','Glutes':'ألوية','Core':'جذع','Abs':'بطن','Arms':'ذراعان','Rear Delts':'أكتاف خلفية','Push':'دفع','Pull':'سحب','Upper':'علوي','Lower':'سفلي','Full Body':'كامل الجسم','Full Back Focus':'تركيز الظهر الكامل','Cardio':'كارديو','Athletic':'رياضي','Sculpt':'نحت','Tone':'شد','Fat Burn':'حرق دهون','A':'أ','B':'ب','C':'ج'};
-const dayName=s=>String(s).split(/\s*\+\s*/).map(p=>{const m=p.match(/^(.*?)(\s+[A-C])?$/);const base=(m[1]||p).trim();return (DAYN[base]||DICT[norm(base)]||base)+(m[2]?' '+(DAYN[m[2].trim()]||m[2].trim()):'')}).join(' + ');
+let _DL=null;const _dl=n=>{if(!_DL){_DL={};for(const k in DICT)_DL[k.toLowerCase()]=DICT[k]}return _DL[n.toLowerCase()]};
+const dayName=s=>DICT[norm(s)]||_dl(norm(s))||String(s).split(/\s*\+\s*/).map(p=>{const m=p.match(/^(.*?)(\s+[A-C])?$/);const base=(m[1]||p).trim();return (DAYN[base]||DICT[norm(base)]||base)+(m[2]?' '+(DAYN[m[2].trim()]||m[2].trim()):'')}).join(' + ');
 const EXN={}; /* exercise names (only used inside tabs that list bare names) */
 function buildExn(){try{const M=window.MH_EXERCISE_AR||{};Object.keys(M).forEach(k=>{if(M[k])EXN[norm(k)]=M[k]});(window.E||[]).concat(window.AUX||[]).forEach(e=>{if(e&&e.ar&&e.name)EXN[norm(e.name)]=e.ar})}catch(e){}}
 const PAT=[
@@ -27162,12 +27184,13 @@ html.mh-rose-theme body .mhwn-ov .mhwn-ok{background:linear-gradient(135deg,#f47
    "new update" bar, and a one-time "What's new" card per build. */
 (function(){
 'use strict';
-var BUILD='2026-10-03a';
+var BUILD='2026-10-03b';
 var NOTES=[
  ['🎥','صوّر حالك بكل حركة','Record yourself on any exercise','كبسة 📷 جنب كل حركة: صوّر 7 ثواني، شوف شكلك، وابعت الفيديو لمدرّبك عالواتساب.','Tap 📷 next to any exercise: record 7 seconds, check your form and send it to your coach on WhatsApp.'],
  ['🥗','أهداف تغذية جديدة','New nutrition goals','تثبيت الوزن، لين بالك (زيادة عضلية نظيفة)، وتضخيم بزيادة سعرات أوضح.','Maintenance, Lean Bulk, and a clearer Bulk with a proper calorie surplus.'],
  ['⚡','أسرع، وبيشتغل بلا إنترنت','Faster, and works offline','التطبيق صار يفتح فوراً من تلفونك، وحتى بلا إنترنت. التحديثات بتوصلك لحالها.','The app now opens instantly from your phone, even with no internet. Updates arrive on their own.'],
- ['🔒','حماية أقوى للاشتراك','Safer subscription','كود التجربة ما بيقدر يقصّر اشتراك مدفوع شغّال.','A trial code can no longer shorten an active paid subscription.']
+ ['🏋️','20 حركة عالمية جديدة','20 new world-class movements','أجهزة كارديو (إليبتيكال، أسولت بايك، سكي إرغ…)، مهارات كاليستنكس (فرونت ليفر، بلانش، هيومن فلاغ…) وحركات قوة.','Cardio machines (elliptical, assault bike, ski erg…), calisthenics skills (front lever, planche, human flag…) and strength lifts.'],
+ ['🌬️','تنفّس الاستشفاء بآخر كل تمرين','Recovery breathing after every workout','تمرين تنفّس حسب مستواك (من 4/6 للمبتدئ لتنفّس المربّع والتنهيدة الفسيولوجية للمتقدّم والنخبة) بينزّل النبض وبيسرّع الاستشفاء.','A breathing drill matched to your level (4/6 for beginners up to box breathing and the physiological sigh for advanced and elite) to bring the heart rate down and speed recovery.']
 ];
 var KEY='MH_SEEN_BUILD';
 function ar(){try{if(typeof S!=='undefined'&&S&&S.language)return S.language==='ar'}catch(e){}return document.documentElement.lang==='ar'||document.documentElement.dir==='rtl'}
@@ -27180,7 +27203,17 @@ function bar(){if(document.getElementById('mhUpd2'))return;if(blocked()){clearTi
  b.innerHTML='<span>✨ '+(a?'في تحديث جديد للتطبيق':'A new version is ready')+'</span><button type="button" data-u="go">'+(a?'حدّث':'Update')+'</button><button type="button" class="x" data-u="x" aria-label="'+(a?'لاحقاً':'Later')+'">✕</button>';
  b.addEventListener('click',function(e){var t=e.target.closest('button');if(!t)return;if(t.getAttribute('data-u')==='go'){location.reload()}else b.remove()});
  document.body.appendChild(b)}
-try{if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='MH_PAGE_UPDATED')bar()});
+/* Silent auto-update: the new version is already saved on the phone. Switch to it by itself at a safe moment
+   (right after opening, or when the app comes back from the background) — never during a workout or while typing. */
+var T0=Date.now(),pending=false,hiddenAt=0;
+function busy(){try{if(typeof T!=='undefined'&&T&&T.running)return true}catch(e){}
+ var m=document.querySelectorAll('#workoutModal.show,#timerModal.show,.mhfc-ov,.mhwn-ov');if(m.length)return true;
+ var a=document.activeElement;if(a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.isContentEditable)&&a.type!=='button')return true;
+ return false}
+function apply(){if(busy())return false;try{sessionStorage.setItem('mhAutoUpd','1')}catch(e){}location.reload();return true}
+function onUpdate(){pending=true;if(Date.now()-T0<20000||blocked())apply()}
+try{if('serviceWorker' in navigator){navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='MH_PAGE_UPDATED')onUpdate()});
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'){hiddenAt=Date.now();return}if(pending&&hiddenAt&&Date.now()-hiddenAt>15000)apply()});
  window.addEventListener('load',function(){setTimeout(check,4000)});
  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check()})}}catch(e){}
 /* ---------- What's new (once per build) ---------- */
@@ -27196,6 +27229,116 @@ function maybe(){var seen=ls(KEY);if(seen===BUILD)return;
  var n=0,t=setInterval(function(){n++;if(n>120){clearInterval(t);return}if(blocked())return;clearInterval(t);setTimeout(function(){if(!blocked())show();else maybe()},900)},800)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(maybe,1500)});else setTimeout(maybe,1500);
 window.MH_UPDATE={build:BUILD,check:function(){last=0;check()},whatsNew:show};
+})();
+</script>
+<script>
+/* MH BREATHING FINISH — every training day ends with a recovery-breathing drill as the last cool-down item.
+   The drill follows the training level. Breath-holding drills (Box) are never given to anyone with high/low blood
+   pressure, a heart condition, asthma, hernia, recent surgery, "other" medical condition, pregnancy/postpartum,
+   dizziness, a no-breath-holding restriction, age 65+, or an unknown/blank level — those always get the gentle 4/6 drill. */
+(function(){
+'use strict';
+var EQ=['home','bodyweight','full','dumbbell','band'];
+var V={
+ beginner:{id:'mhBreath1',name:'Recovery Breathing (4s in / 6s out)',ar:'تنفّس الاستشفاء (شهيق 4 ثواني / زفير 6)',
+  cues:['Lie or sit comfortably, one hand on the belly','Breathe in through the nose for 4 seconds — the belly rises','Breathe out slowly through the mouth for 6 seconds','About 6 calm breaths (1 minute) — never hold the breath']},
+ intermediate:{id:'mhBreath2',name:'Long-Exhale Breathing (4s in / 8s out)',ar:'تنفّس الزفير الطويل (شهيق 4 / زفير 8)',
+  cues:['Sit or lie down, shoulders relaxed','Inhale through the nose for 4 seconds','Exhale slowly through pursed lips for 8 seconds','About 8 breaths (1.5 minutes) — the long exhale brings the heart rate down']},
+ advanced:{id:'mhBreath3',name:'Box Breathing (4-4-4-4)',ar:'تنفّس المربّع (4-4-4-4)',
+  cues:['Inhale through the nose for 4 seconds','Hold gently for 4 seconds — no straining','Exhale for 4 seconds, then rest empty for 4 seconds','Repeat for about 2 minutes; switch to 4s in / 6s out if dizzy']},
+ elite:{id:'mhBreath4',name:'Physiological Sigh (double inhale, long exhale)',ar:'التنهيدة الفسيولوجية (شهيقين + زفير طويل)',
+  cues:['Take a full inhale through the nose','Add a short second sip of air on top','Let it all out in one long, slow exhale through the mouth','Repeat calmly for about 2 minutes — the fastest way to settle after hard work']}
+};
+var ALL=Object.keys(V).map(function(k){var x=V[k];return Object.assign({muscle:'stretch',equipment:EQ,difficulty:1,joints:[]},x)});
+var IDS=ALL.map(function(x){return x.id}).concat(['mhBreathFinish']);
+try{if(typeof AUX!=='undefined'&&Array.isArray(AUX))ALL.forEach(function(b){if(!AUX.some(function(a){return a.id===b.id}))AUX.push(b)})}catch(e){}
+try{if(window.MH_EXERCISE_AR){ALL.forEach(function(b){MH_EXERCISE_AR[b.name]=b.ar});if(typeof E!=='undefined')E.forEach(function(e){if(e&&/^mhx/.test(e.id)&&e.ar)MH_EXERCISE_AR[e.name]=e.ar})}}catch(e){}
+function client(){try{if(typeof c14==='function')return c14()||{}}catch(e){}try{if(typeof getClient==='function')return getClient()||{}}catch(e){}return {}}
+function gentleOnly(c){try{
+ var h=(c.health&&c.health.conds)||{},on=function(k){return !!(h[k]&&h[k].on)};
+ if(['hbp','lbp','cv','asthma','hernia','post','other'].some(on))return true;
+ if(Object.keys(h).some(function(k){return on(k)&&Array.isArray(h[k].rs)&&h[k].rs.indexOf('strain')>=0}))return true;
+ if(c.womenHealth&&c.womenHealth!=='none')return true;
+ if(c.womenSupineDizzy)return true;
+ if(Number(c.age)>=65)return true;
+}catch(e){}return false}
+function pick(c){var lv=String(c.level||'').toLowerCase();
+ if(!V[lv])lv='beginner';
+ if(gentleOnly(c))lv='beginner';  /* at-risk clients always get the gentle 4/6 drill — never a breath-hold */
+ return Object.assign({muscle:'stretch',equipment:EQ,difficulty:1,joints:[]},V[lv])}
+function add(){try{if(typeof S==='undefined'||!S||!Array.isArray(S.program))return;
+ var br=pick(client());
+ S.program.forEach(function(d){if(!d||d.cardioMain)return;
+  if((d.groups||[]).some(function(g){return g&&g.muscle==='breathing'}))return; /* women's-health days already open with breathing work */
+  if(!Array.isArray(d.stretches))d.stretches=[];
+  var last=d.stretches[d.stretches.length-1];if(last&&last.id===br.id)return;
+  d.stretches=d.stretches.filter(function(e){return !(e&&IDS.indexOf(e.id)>=0)});
+  d.stretches.push(Object.assign({},br,{_type:'stretch'}))})}catch(e){}}
+try{if(typeof renderProgram==='function'){var orig=renderProgram;window.renderProgram=function(){add();return orig.apply(this,arguments)}}}catch(e){}
+window.MH_BREATH_FINISH={variants:V,pick:function(){return pick(client())},apply:add};
+})();
+</script>
+<style id="mhGateV2Css" data-no-rose data-no-noir>
+html body #mhLicenseGate{background:radial-gradient(120% 70% at 50% 0%,rgba(232,181,74,.16),transparent 60%),radial-gradient(90% 60% at 50% 100%,rgba(232,181,74,.08),transparent 60%),#07080a!important;padding:16px!important}
+html body #mhLicenseGate .mh-lic-card{max-width:420px!important;width:100%!important;margin:auto!important;padding:28px 22px 20px!important;border-radius:28px!important;background:linear-gradient(170deg,#17171a 0%,#0e0e10 100%)!important;border:1px solid rgba(232,181,74,.28)!important;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05)!important;text-align:center}
+html body #mhLicenseGate .mh-lic-brand{display:none!important}
+#mhGateHero .br{direction:ltr;font-size:13px;font-weight:900;letter-spacing:.24em;color:#d9d9d9;margin-bottom:14px}
+#mhGateHero .br::before{content:"MH "}#mhGateHero .br::after{content:"ELITE PRO";color:#e8b54a}
+html body #mhLicenseGate .mh-lic-brand-icon{display:none!important}
+html body #mhLicenseGate .mh-lic-sub{display:none!important}
+#mhGateHero{margin:6px 0 18px}
+#mhGateHero .ic{width:78px;height:78px;margin:6px auto 16px;border-radius:24px;display:grid;place-items:center;font-size:38px;background:linear-gradient(145deg,#f6d98c,#c99030);box-shadow:0 12px 30px rgba(232,181,74,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+#mhGateHero h2{margin:0 0 8px;font-size:23px;line-height:1.35;color:#f5f5f5;font-weight:900}
+#mhGateHero p{margin:0 auto;max-width:320px;font-size:14.5px;line-height:1.7;color:#a8a8a8}
+#mhGateHero .safe{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 12px;border-radius:999px;background:rgba(34,197,94,.1);color:#4ade80;font-size:12.5px;font-weight:800}
+html body #mhLicenseGate #mhGateWa{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;margin:0 0 10px;border:0!important;border-radius:16px!important;background:linear-gradient(135deg,#f6d98c,#d9a441)!important;color:#141006!important;font:inherit;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 10px 26px rgba(232,181,74,.28)!important}
+html body #mhLicenseGate .mh-lic-code-toggle{display:block!important;width:100%!important;min-height:50px!important;margin:0 0 10px!important;border-radius:16px!important;border:1px solid rgba(255,255,255,.14)!important;background:rgba(255,255,255,.03)!important;color:#ededed!important;font-weight:800!important;text-decoration:none!important;font-size:15px!important}
+html body #mhLicenseGate .mh-lic-lang{display:inline-block!important;width:auto!important;min-height:36px!important;margin:4px auto 0!important;padding:0 14px!important;border-radius:999px!important;border:0!important;background:transparent!important;color:#8a8a8a!important;font-size:13px!important;font-weight:700!important}
+html body #mhLicenseGate .mh-lic-help{display:none!important}
+html body #mhLicenseGate .mh-lic-msg{display:none!important;margin:8px 0 0!important;color:#fca5a5!important;font-size:13px!important}
+html body #mhLicenseGate .mh-lic-code-wrap.open ~ .mh-lic-msg:not(:empty){display:block!important}
+html body #mhLicenseGate #mhSubRenewGate{display:block;width:100%;min-height:50px;margin:0 0 10px!important;border-radius:16px!important;border:1px solid rgba(232,181,74,.45)!important;background:rgba(232,181,74,.08)!important;color:#f3c969!important;font-weight:800!important;box-shadow:none!important}
+html body #mhLicenseGate #mhSubRenewGate[hidden]{display:none!important}
+html body #mhLicenseGate .mh-lic-code-wrap.open{margin-bottom:10px}
+html body #mhLicenseGate #mhLicActivate{border-radius:14px!important}
+html body #mhLicenseGate .mh-lic-card *:focus-visible{outline:2px solid #e8b54a;outline-offset:2px}
+</style>
+<script>
+/* MH GATE V2 — the activation screen only appears when there is no valid subscription (expired / trial ended / clock problem),
+   with a clean "renew" screen: WhatsApp to the coach first, activation code second. */
+(function(){
+'use strict';
+var COACH='96176939848';
+function g(id){return document.getElementById(id)}
+function ar(){try{if(typeof S!=='undefined'&&S&&S.language)return S.language==='ar'}catch(e){}var h=document.documentElement;return h.lang==='ar'||h.dir==='rtl'}
+function lic(){try{return JSON.parse(localStorage.getItem('MH_ELITE_LICENSE_V10')||'null')}catch(e){return null}}
+function render(){var gate=g('mhLicenseGate');if(!gate)return;var card=gate.querySelector('.mh-lic-card');if(!card)return;
+ var a=ar(),x=lic(),msg=(g('mhLicMsg')||{}).textContent||'';
+ var clock=/date|time|تاريخ|وقت/i.test(msg)&&/device|الجهاز/i.test(msg);
+ var expired=x&&x.end&&Date.now()>=x.end,trial=!!(x&&x.trial);
+ var ic,t,p;
+ if(clock){ic='🕒';t=a?'صحّح تاريخ ووقت التلفون':'Fix your phone’s date & time';p=a?'فعّل «التاريخ والوقت التلقائي» من إعدادات التلفون، وبعدين افتح التطبيق من جديد.':'Turn on “Automatic date & time” in your phone settings, then reopen the app.'}
+ else if(expired&&trial){ic='⏳';t=a?'خلصت التجربة المجانية':'Your free trial has ended';p=a?'عجبك التطبيق؟ اشترك لتكمّل برنامجك وتغذيتك مع مدرّبك.':'Enjoyed it? Subscribe to keep going with your program and nutrition.'}
+ else if(expired){ic='👑';t=a?'خلص اشتراكك':'Your subscription has ended';p=a?'جدّد اشتراكك لتكمّل تمرينك من وين وقفت.':'Renew to continue right where you left off.'}
+ else{ic='⚡';t=a?'أهلاً فيك بـ MH ELITE PRO':'Welcome to MH ELITE PRO';p=a?'فعّل اشتراكك لتبلّش برنامجك.':'Activate your subscription to start your program.'}
+ var hero=g('mhGateHero');if(!hero){hero=document.createElement('div');hero.id='mhGateHero';var br=card.querySelector('.mh-lic-brand');(br&&br.nextSibling)?card.insertBefore(hero,br.nextSibling):card.prepend(hero)}
+ hero.setAttribute('dir',a?'rtl':'ltr');
+ hero.innerHTML='<div class="br" aria-label="MH ELITE PRO"></div><div class="ic" aria-hidden="true">'+ic+'</div><h2>'+t+'</h2><p>'+p+'</p>'+(clock?'':'<div class="safe">🔒 '+(a?'كل بياناتك محفوظة':'All your data is saved')+'</div>');
+ var wa=g('mhGateWa');if(!clock){if(!wa){wa=document.createElement('button');wa.type='button';wa.id='mhGateWa';var before=g('mhSubRenewGate')||g('mhLicCodeToggle');before?card.insertBefore(wa,before):card.appendChild(wa);
+   wa.addEventListener('click',function(){var a2=ar(),nm='';try{nm=(g('name')||{}).value||''}catch(e){}
+    var txt=a2?('مرحبا كوتش 👋'+(nm?' أنا '+nm+'.':'')+' بدي جدّد اشتراكي بتطبيق MH ELITE PRO.'):('Hi coach 👋'+(nm?' This is '+nm+'.':'')+' I would like to renew my MH ELITE PRO subscription.');
+    var l=document.createElement('a');l.href='https://wa.me/'+COACH+'?text='+encodeURIComponent(txt);l.target='_blank';l.rel='noopener noreferrer';document.body.appendChild(l);l.click();l.remove()})}
+  wa.textContent='💬 '+(ar()?(expired||!x?'جدّد اشتراكك عبر واتساب':'اشترك عبر واتساب'):'Renew on WhatsApp');wa.hidden=false}
+ else if(wa)wa.hidden=true;
+ var tg2=g('mhLicCodeToggle');if(tg2)tg2.textContent='🔑 '+(a?'عندي كود تفعيل':'I have an activation code');
+}
+function watch(){var gate=g('mhLicenseGate');if(!gate)return;
+ if(gate.classList.contains('show'))render();
+ new MutationObserver(function(){if(gate.classList.contains('show'))render()}).observe(gate,{attributes:true,attributeFilter:['class']});
+ var m=g('mhLicMsg');if(m)new MutationObserver(function(){if(gate.classList.contains('show'))render()}).observe(m,{childList:true,characterData:true,subtree:true});
+ var lb=g('mhLicLang');if(lb)lb.addEventListener('click',function(){setTimeout(render,60)})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch);else watch();
+window.MH_GATE_V2={render:render};
 })();
 </script>
 </body>
