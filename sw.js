@@ -2,7 +2,7 @@
    Pages (HTML) are CACHE-FIRST: the app opens instantly from the copy saved on the phone, even with no internet.
    In the background the latest version is downloaded; if it differs, the open app is told so it can show
    "✨ New update — tap to refresh". Other same-origin files (icons, manifest, coach videos) are cache-first too. */
-const CACHE = 'mh-elite-pro-2026-10-03';
+const CACHE = 'mh-elite-pro-2026-10-08-icon';
 const CORE = ['./', 'MH-ELITE-PRO.html', 'manifest.json'];
 
 self.addEventListener('install', event => {
