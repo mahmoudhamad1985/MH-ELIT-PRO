@@ -1,14 +1,9 @@
 {
- "id": "./MH-ELITE-PRO.html",
  "name": "MH ELITE PRO",
- "short_name": "MH ELITE",
- "description": "Personal training & nutrition coaching app",
- "lang": "ar",
- "dir": "auto",
- "start_url": "./MH-ELITE-PRO.html",
+ "short_name": "MH ELITE PRO",
+ "start_url": "MH-ELITE-PRO.html",
  "scope": "./",
  "display": "standalone",
- "orientation": "portrait",
  "background_color": "#070b12",
  "theme_color": "#070b12",
  "icons": [
@@ -25,7 +20,7 @@
    "purpose": "any"
   },
   {
-   "src": "icon-maskable-512.png",
+   "src": "icon-512.png",
    "sizes": "512x512",
    "type": "image/png",
    "purpose": "maskable"
