@@ -1,20 +1,19 @@
 {
  "v": 1,
  "gifs": {
-  "incline dumbbell lateral raise": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/incline-dumbbell-lateral-raise.gif",
-  "single arm overhead cable extension": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/single-arm-overhead-cable-extension.gif",
-  "single arm cable fly": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/single-arm-cable-fly.gif",
-  "parallel bar dips": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/parallel-bar-dips.gif",
-  "parallel bar dip": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/parallel-bar-dips.gif",
-  "incline ez bar skull crusher": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/incline-ez-bar-skull-crusher.gif",
-  "incline skull crusher": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/incline-ez-bar-skull-crusher.gif",
-  "dumbbell forward lunge": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/dumbbell-forward-lunge.gif",
-  "single arm preacher curl": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/single-arm-preacher-curl.gif",
-  "underhand barbell row": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/underhand-barbell-row.gif",
-  "wide grip barbell row": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/wide-grip-barbell-row.gif",
-  "barbell hip thrust": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/barbell-hip-thrust.gif",
-  "ez bar skull crusher": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/ez-bar-skull-crusher.gif",
-  "standing overhead ez bar extension": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/gifs/standing-overhead-ez-bar-extension.gif"
+  "incline dumbbell lateral raise": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-incline-dumbbell-lateral-raise.gif",
+  "single arm overhead cable extension": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-single-arm-overhead-cable-extension.gif",
+  "single arm cable fly": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-single-arm-cable-fly.gif",
+  "parallel bar dips": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-parallel-bar-dips.gif",
+  "parallel bar dip": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-parallel-bar-dips.gif",
+  "incline ez bar skull crusher": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-incline-ez-bar-skull-crusher.gif",
+  "incline skull crusher": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-incline-ez-bar-skull-crusher.gif",
+  "dumbbell forward lunge": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-dumbbell-forward-lunge.gif",
+  "single arm preacher curl": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-single-arm-preacher-curl.gif",
+  "wide grip barbell row": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-wide-grip-barbell-row.gif",
+  "barbell hip thrust": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-barbell-hip-thrust.gif",
+  "ez bar skull crusher": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-ez-bar-skull-crusher.gif",
+  "standing overhead ez bar extension": "https://mahmoudhamad1985.github.io/MH-ELIT-PRO/mh-standing-overhead-ez-bar-extension.gif"
  },
- "count": 14
+ "count": 13
 }
